@@ -1,7 +1,7 @@
 apiVersion: v2
-name: steadybit-extension-scaffold
-description: Steadybit scaffold extension Helm chart for Kubernetes.
-version: 1.0.22
+name: steadybit-extension-dynatrace
+description: Steadybit Dynatrace extension Helm chart for Kubernetes.
+version: 1.0.0
 appVersion: latest
 home: https://www.steadybit.com/
 icon: https://steadybit-website-assets.s3.amazonaws.com/logo-symbol-transparent.png
@@ -9,7 +9,7 @@ maintainers:
   - email: daniel.reuter@steadybit.com
     name: reuda
 sources:
-  - https://github.com/steadybit/extension-scaffold
+  - https://github.com/steadybit/extension-dynatrace
 annotations:
   artifacthub.io/images: |
     - name: logo

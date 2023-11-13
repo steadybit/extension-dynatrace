@@ -6,21 +6,21 @@ manifest should match snapshot using podAnnotations and Labels:
       labels:
         steadybit.com/discovery-disabled: "true"
         steadybit.com/extension: "true"
-      name: RELEASE-NAME-steadybit-extension-scaffold
+      name: RELEASE-NAME-steadybit-extension-dynatrace
       namespace: NAMESPACE
     spec:
       replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
-          app.kubernetes.io/name: steadybit-extension-scaffold
+          app.kubernetes.io/name: steadybit-extension-dynatrace
       template:
         metadata:
           annotations:
             some-annotation: some-annotation-value
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
-            app.kubernetes.io/name: steadybit-extension-scaffold
+            app.kubernetes.io/name: steadybit-extension-dynatrace
             some-label: some-label-value
             steadybit.com/discovery-disabled: "true"
             steadybit.com/extension: "true"
@@ -31,17 +31,19 @@ manifest should match snapshot using podAnnotations and Labels:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
-              image: ghcr.io/steadybit/extension-scaffold:latest
+              image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8091
               name: extension
+              ports:
+                - containerPort: 8090
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8091
               resources:
                 limits:
                   cpu: 200m
@@ -59,7 +61,7 @@ manifest should match snapshot using podAnnotations and Labels:
                 runAsNonRoot: true
                 runAsUser: 10000
               volumeMounts: null
-          serviceAccountName: steadybit-extension-scaffold
+          serviceAccountName: steadybit-extension-dynatrace
           volumes: null
 manifest should match snapshot with TLS:
   1: |
@@ -69,20 +71,20 @@ manifest should match snapshot with TLS:
       labels:
         steadybit.com/discovery-disabled: "true"
         steadybit.com/extension: "true"
-      name: RELEASE-NAME-steadybit-extension-scaffold
+      name: RELEASE-NAME-steadybit-extension-dynatrace
       namespace: NAMESPACE
     spec:
       replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
-          app.kubernetes.io/name: steadybit-extension-scaffold
+          app.kubernetes.io/name: steadybit-extension-dynatrace
       template:
         metadata:
           annotations: null
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
-            app.kubernetes.io/name: steadybit-extension-scaffold
+            app.kubernetes.io/name: steadybit-extension-dynatrace
             steadybit.com/discovery-disabled: "true"
             steadybit.com/extension: "true"
         spec:
@@ -96,17 +98,19 @@ manifest should match snapshot with TLS:
                   value: /etc/extension/certificates/server-cert/tls.crt
                 - name: STEADYBIT_EXTENSION_TLS_SERVER_KEY
                   value: /etc/extension/certificates/server-cert/tls.key
-              image: ghcr.io/steadybit/extension-scaffold:latest
+              image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8091
               name: extension
+              ports:
+                - containerPort: 8090
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8091
               resources:
                 limits:
                   cpu: 200m
@@ -127,7 +131,7 @@ manifest should match snapshot with TLS:
                 - mountPath: /etc/extension/certificates/server-cert
                   name: certificate-server-cert
                   readOnly: true
-          serviceAccountName: steadybit-extension-scaffold
+          serviceAccountName: steadybit-extension-dynatrace
           volumes:
             - name: certificate-server-cert
               secret:
@@ -141,20 +145,20 @@ manifest should match snapshot with extra env vars:
       labels:
         steadybit.com/discovery-disabled: "true"
         steadybit.com/extension: "true"
-      name: RELEASE-NAME-steadybit-extension-scaffold
+      name: RELEASE-NAME-steadybit-extension-dynatrace
       namespace: NAMESPACE
     spec:
       replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
-          app.kubernetes.io/name: steadybit-extension-scaffold
+          app.kubernetes.io/name: steadybit-extension-dynatrace
       template:
         metadata:
           annotations: null
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
-            app.kubernetes.io/name: steadybit-extension-scaffold
+            app.kubernetes.io/name: steadybit-extension-dynatrace
             steadybit.com/discovery-disabled: "true"
             steadybit.com/extension: "true"
         spec:
@@ -171,17 +175,19 @@ manifest should match snapshot with extra env vars:
                   name: env-configmap
                 - name: env-secrets
                   secretRef: null
-              image: ghcr.io/steadybit/extension-scaffold:latest
+              image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8091
               name: extension
+              ports:
+                - containerPort: 8090
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8091
               resources:
                 limits:
                   cpu: 200m
@@ -199,7 +205,7 @@ manifest should match snapshot with extra env vars:
                 runAsNonRoot: true
                 runAsUser: 10000
               volumeMounts: null
-          serviceAccountName: steadybit-extension-scaffold
+          serviceAccountName: steadybit-extension-dynatrace
           volumes: null
 manifest should match snapshot with extra labels:
   1: |
@@ -210,20 +216,20 @@ manifest should match snapshot with extra labels:
         steadybit.com/discovery-disabled: "true"
         steadybit.com/extension: "true"
         tags.datadoghq.com/service: steadybit-extension
-      name: RELEASE-NAME-steadybit-extension-scaffold
+      name: RELEASE-NAME-steadybit-extension-dynatrace
       namespace: NAMESPACE
     spec:
       replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
-          app.kubernetes.io/name: steadybit-extension-scaffold
+          app.kubernetes.io/name: steadybit-extension-dynatrace
       template:
         metadata:
           annotations: null
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
-            app.kubernetes.io/name: steadybit-extension-scaffold
+            app.kubernetes.io/name: steadybit-extension-dynatrace
             steadybit.com/discovery-disabled: "true"
             steadybit.com/extension: "true"
             tags.datadoghq.com/service: steadybit-extension
@@ -234,17 +240,19 @@ manifest should match snapshot with extra labels:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
-              image: ghcr.io/steadybit/extension-scaffold:latest
+              image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8091
               name: extension
+              ports:
+                - containerPort: 8090
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8091
               resources:
                 limits:
                   cpu: 200m
@@ -262,7 +270,7 @@ manifest should match snapshot with extra labels:
                 runAsNonRoot: true
                 runAsUser: 10000
               volumeMounts: null
-          serviceAccountName: steadybit-extension-scaffold
+          serviceAccountName: steadybit-extension-dynatrace
           volumes: null
 manifest should match snapshot with mutual TLS:
   1: |
@@ -272,20 +280,20 @@ manifest should match snapshot with mutual TLS:
       labels:
         steadybit.com/discovery-disabled: "true"
         steadybit.com/extension: "true"
-      name: RELEASE-NAME-steadybit-extension-scaffold
+      name: RELEASE-NAME-steadybit-extension-dynatrace
       namespace: NAMESPACE
     spec:
       replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
-          app.kubernetes.io/name: steadybit-extension-scaffold
+          app.kubernetes.io/name: steadybit-extension-dynatrace
       template:
         metadata:
           annotations: null
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
-            app.kubernetes.io/name: steadybit-extension-scaffold
+            app.kubernetes.io/name: steadybit-extension-dynatrace
             steadybit.com/discovery-disabled: "true"
             steadybit.com/extension: "true"
         spec:
@@ -301,17 +309,19 @@ manifest should match snapshot with mutual TLS:
                   value: /etc/extension/certificates/server-cert/tls.key
                 - name: STEADYBIT_EXTENSION_TLS_CLIENT_CAS
                   value: /etc/extension/certificates/client-cert-a/tls.crt,/etc/extension/certificates/client-cert-a/tls.crt
-              image: ghcr.io/steadybit/extension-scaffold:latest
+              image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8091
               name: extension
+              ports:
+                - containerPort: 8090
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8091
               resources:
                 limits:
                   cpu: 200m
@@ -335,7 +345,7 @@ manifest should match snapshot with mutual TLS:
                 - mountPath: /etc/extension/certificates/server-cert
                   name: certificate-server-cert
                   readOnly: true
-          serviceAccountName: steadybit-extension-scaffold
+          serviceAccountName: steadybit-extension-dynatrace
           volumes:
             - name: certificate-client-cert-a
               secret:
@@ -353,20 +363,20 @@ manifest should match snapshot with mutual TLS using containerPaths:
       labels:
         steadybit.com/discovery-disabled: "true"
         steadybit.com/extension: "true"
-      name: RELEASE-NAME-steadybit-extension-scaffold
+      name: RELEASE-NAME-steadybit-extension-dynatrace
       namespace: NAMESPACE
     spec:
       replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
-          app.kubernetes.io/name: steadybit-extension-scaffold
+          app.kubernetes.io/name: steadybit-extension-dynatrace
       template:
         metadata:
           annotations: null
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
-            app.kubernetes.io/name: steadybit-extension-scaffold
+            app.kubernetes.io/name: steadybit-extension-dynatrace
             steadybit.com/discovery-disabled: "true"
             steadybit.com/extension: "true"
         spec:
@@ -382,17 +392,19 @@ manifest should match snapshot with mutual TLS using containerPaths:
                   value: /etc/tls/server.key
                 - name: STEADYBIT_EXTENSION_TLS_CLIENT_CAS
                   value: /etc/tls/ca.crt,/etc/tls/ca2.crt
-              image: ghcr.io/steadybit/extension-scaffold:latest
+              image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8091
               name: extension
+              ports:
+                - containerPort: 8090
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8091
               resources:
                 limits:
                   cpu: 200m
@@ -410,7 +422,7 @@ manifest should match snapshot with mutual TLS using containerPaths:
                 runAsNonRoot: true
                 runAsUser: 10000
               volumeMounts: null
-          serviceAccountName: steadybit-extension-scaffold
+          serviceAccountName: steadybit-extension-dynatrace
           volumes: null
 manifest should match snapshot with podSecurityContext:
   1: |
@@ -420,20 +432,20 @@ manifest should match snapshot with podSecurityContext:
       labels:
         steadybit.com/discovery-disabled: "true"
         steadybit.com/extension: "true"
-      name: RELEASE-NAME-steadybit-extension-scaffold
+      name: RELEASE-NAME-steadybit-extension-dynatrace
       namespace: NAMESPACE
     spec:
       replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
-          app.kubernetes.io/name: steadybit-extension-scaffold
+          app.kubernetes.io/name: steadybit-extension-dynatrace
       template:
         metadata:
           annotations: null
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
-            app.kubernetes.io/name: steadybit-extension-scaffold
+            app.kubernetes.io/name: steadybit-extension-dynatrace
             steadybit.com/discovery-disabled: "true"
             steadybit.com/extension: "true"
         spec:
@@ -443,17 +455,19 @@ manifest should match snapshot with podSecurityContext:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
-              image: ghcr.io/steadybit/extension-scaffold:latest
+              image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8091
               name: extension
+              ports:
+                - containerPort: 8090
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8091
               resources:
                 limits:
                   cpu: 200m
@@ -473,7 +487,7 @@ manifest should match snapshot with podSecurityContext:
               volumeMounts: null
           securityContext:
             runAsUser: 2222
-          serviceAccountName: steadybit-extension-scaffold
+          serviceAccountName: steadybit-extension-dynatrace
           volumes: null
 manifest should match snapshot with priority class:
   1: |
@@ -483,20 +497,20 @@ manifest should match snapshot with priority class:
       labels:
         steadybit.com/discovery-disabled: "true"
         steadybit.com/extension: "true"
-      name: RELEASE-NAME-steadybit-extension-scaffold
+      name: RELEASE-NAME-steadybit-extension-dynatrace
       namespace: NAMESPACE
     spec:
       replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
-          app.kubernetes.io/name: steadybit-extension-scaffold
+          app.kubernetes.io/name: steadybit-extension-dynatrace
       template:
         metadata:
           annotations: null
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
-            app.kubernetes.io/name: steadybit-extension-scaffold
+            app.kubernetes.io/name: steadybit-extension-dynatrace
             steadybit.com/discovery-disabled: "true"
             steadybit.com/extension: "true"
         spec:
@@ -506,17 +520,19 @@ manifest should match snapshot with priority class:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
-              image: ghcr.io/steadybit/extension-scaffold:latest
+              image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8091
               name: extension
+              ports:
+                - containerPort: 8090
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8091
               resources:
                 limits:
                   cpu: 200m
@@ -535,7 +551,7 @@ manifest should match snapshot with priority class:
                 runAsUser: 10000
               volumeMounts: null
           priorityClassName: my-priority-class
-          serviceAccountName: steadybit-extension-scaffold
+          serviceAccountName: steadybit-extension-dynatrace
           volumes: null
 manifest should match snapshot without TLS:
   1: |
@@ -545,20 +561,20 @@ manifest should match snapshot without TLS:
       labels:
         steadybit.com/discovery-disabled: "true"
         steadybit.com/extension: "true"
-      name: RELEASE-NAME-steadybit-extension-scaffold
+      name: RELEASE-NAME-steadybit-extension-dynatrace
       namespace: NAMESPACE
     spec:
       replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
-          app.kubernetes.io/name: steadybit-extension-scaffold
+          app.kubernetes.io/name: steadybit-extension-dynatrace
       template:
         metadata:
           annotations: null
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
-            app.kubernetes.io/name: steadybit-extension-scaffold
+            app.kubernetes.io/name: steadybit-extension-dynatrace
             steadybit.com/discovery-disabled: "true"
             steadybit.com/extension: "true"
         spec:
@@ -568,17 +584,19 @@ manifest should match snapshot without TLS:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
-              image: ghcr.io/steadybit/extension-scaffold:latest
+              image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8091
               name: extension
+              ports:
+                - containerPort: 8090
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8091
               resources:
                 limits:
                   cpu: 200m
@@ -596,5 +614,5 @@ manifest should match snapshot without TLS:
                 runAsNonRoot: true
                 runAsUser: 10000
               volumeMounts: null
-          serviceAccountName: steadybit-extension-scaffold
+          serviceAccountName: steadybit-extension-dynatrace
           volumes: null

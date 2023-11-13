@@ -1,11 +1,11 @@
-# Default values for steadybit-extension-kubernetes.
+# Default values for steadybit-extension-dynatrace.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 image:
-  # image.name -- The container image to use for the Steadybit scaffold extension.
-  name: ghcr.io/steadybit/extension-scaffold
-  # image.tag -- tag name of the extension-scaffold container image to use.
-  # See https://github.com/steadybit/extension-scaffold/pkgs/container/extension-scaffold/versions for all tags.
+  # image.name -- The container image to use for the Steadybit dynatrace extension.
+  name: ghcr.io/steadybit/extension-dynatrace
+  # image.tag -- tag name of the extension-dynatrace container image to use.
+  # See https://github.com/steadybit/extension-dynatrace/pkgs/container/extension-dynatrace/versions for all tags.
   tag: latest
   # image.pullPolicy -- Specifies when to pull the image container.
   pullPolicy: Always
@@ -52,7 +52,7 @@ serviceAccount:
   # serviceAccount.create -- Specifies whether a ServiceAccount should be created.
   create: true
   # serviceAccount.name -- The name of the ServiceAccount to use.
-  name: steadybit-extension-scaffold
+  name: steadybit-extension-dynatrace
 
 # extra labels to apply to the Kubernetes resources
 extraLabels: {}
@@ -97,9 +97,3 @@ extraEnv: []
 #  - secretRef:
 #    name: env-secrets
 extraEnvFrom: []
-
-discovery:
-  attributes:
-    excludes:
-      # discovery.attributes.excludes.robot -- List of attributes to exclude from Robot discovery.
-      robot: []
