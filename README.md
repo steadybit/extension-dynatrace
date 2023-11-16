@@ -4,14 +4,23 @@
 
 A [Steadybit](https://www.steadybit.com/) extension for [Dynatrace](https://www.dynatrace.com/).
 
-Learn about the capabilities of this extension in our [Reliability Hub](https://hub.steadybit.com/extension/com.steadybit.extension_dynatrace).
+Learn about the capabilities of this extension in
+our [Reliability Hub](https://hub.steadybit.com/extension/com.steadybit.extension_dynatrace).
 
 ## Configuration
 
-| Environment Variable                                      | Helm value                           | Meaning                                                                                                               | Required | Default                 |
-|-----------------------------------------------------------|--------------------------------------|-----------------------------------------------------------------------------------------------------------------------|----------|-------------------------|
+| Environment Variable               | Helm value | Meaning                                                                                                                                                  | Required | Default |
+|------------------------------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|
+| `STEADYBIT_EXTENSION_API_BASE_URL` |            | The Dynatrace API Base Url, like `https://{your-environment-id}.live.dynatrace.com/api`                                                                  | yes      |         |
+| `STEADYBIT_EXTENSION_API_TOKEN`    |            | The Dynatrace [API Token](https://docs.dynatrace.com/docs/dynatrace-api/basics/dynatrace-api-authentication#create-token), see the required scopes below | yes      |         |
 
-The extension supports all environment variables provided by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
+The extension supports all environment variables provided
+by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
+
+## Dynatrace Permissions
+
+The extension requires the following scopes:
+- `events.ingest`
 
 ## Installation
 
@@ -49,17 +58,20 @@ docker run \
 ## Register the extension
 
 Make sure to register the extension at the steadybit platform. Please refer to
-the [documentation](https://docs.steadybit.com/integrate-with-steadybit/extensions/extension-installation) for more information.
+the [documentation](https://docs.steadybit.com/integrate-with-steadybit/extensions/extension-installation) for more
+information.
 
 ### Linux Package
 
-Please use our [outpost-linux.sh script](https://docs.steadybit.com/install-and-configure/install-outpost-agent-preview/install-on-linux-hosts) to install the extension on your Linux machine.
+Please use
+our [outpost-linux.sh script](https://docs.steadybit.com/install-and-configure/install-outpost-agent-preview/install-on-linux-hosts)
+to install the extension on your Linux machine.
 The script will download the latest version of the extension and install it using the package manager.
 
 After installing configure the extension by editing `/etc/steadybit/extension-dynatrace` and then restart the service.
 
-
 ## Proxy
+
 To communicate to Dynatrace via a proxy, we need the environment variable `https_proxy` to be set.
 This can be set via helm using the extraEnv variable
 

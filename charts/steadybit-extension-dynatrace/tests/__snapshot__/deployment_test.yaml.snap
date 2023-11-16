@@ -31,6 +31,13 @@ manifest should match snapshot using podAnnotations and Labels:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
+                - name: STEADYBIT_EXTENSION_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-token
+                      name: steadybit-extension-dynatrace
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
@@ -98,6 +105,13 @@ manifest should match snapshot with TLS:
                   value: /etc/extension/certificates/server-cert/tls.crt
                 - name: STEADYBIT_EXTENSION_TLS_SERVER_KEY
                   value: /etc/extension/certificates/server-cert/tls.key
+                - name: STEADYBIT_EXTENSION_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-token
+                      name: steadybit-extension-dynatrace
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
@@ -168,6 +182,13 @@ manifest should match snapshot with extra env vars:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
+                - name: STEADYBIT_EXTENSION_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-token
+                      name: steadybit-extension-dynatrace
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
                 - name: FOO
                   value: bar
               envFrom:
@@ -240,6 +261,13 @@ manifest should match snapshot with extra labels:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
+                - name: STEADYBIT_EXTENSION_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-token
+                      name: steadybit-extension-dynatrace
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
@@ -309,6 +337,13 @@ manifest should match snapshot with mutual TLS:
                   value: /etc/extension/certificates/server-cert/tls.key
                 - name: STEADYBIT_EXTENSION_TLS_CLIENT_CAS
                   value: /etc/extension/certificates/client-cert-a/tls.crt,/etc/extension/certificates/client-cert-a/tls.crt
+                - name: STEADYBIT_EXTENSION_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-token
+                      name: steadybit-extension-dynatrace
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
@@ -392,6 +427,13 @@ manifest should match snapshot with mutual TLS using containerPaths:
                   value: /etc/tls/server.key
                 - name: STEADYBIT_EXTENSION_TLS_CLIENT_CAS
                   value: /etc/tls/ca.crt,/etc/tls/ca2.crt
+                - name: STEADYBIT_EXTENSION_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-token
+                      name: steadybit-extension-dynatrace
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
@@ -455,6 +497,13 @@ manifest should match snapshot with podSecurityContext:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
+                - name: STEADYBIT_EXTENSION_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-token
+                      name: steadybit-extension-dynatrace
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
@@ -520,6 +569,13 @@ manifest should match snapshot with priority class:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
+                - name: STEADYBIT_EXTENSION_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-token
+                      name: steadybit-extension-dynatrace
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
@@ -584,6 +640,13 @@ manifest should match snapshot without TLS:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
+                - name: STEADYBIT_EXTENSION_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-token
+                      name: steadybit-extension-dynatrace
+                - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:

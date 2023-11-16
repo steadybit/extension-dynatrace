@@ -1,6 +1,15 @@
 # Default values for steadybit-extension-dynatrace.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+dynatrace:
+  # dynatrace.apiBaseUrl -- The API base url for the Dynatrace API, like `https://{your-environment-id}.live.dynatrace.com/api`
+  apiBaseUrl: ""
+  # dynatrace.apiToken -- The API Token used to access the Dynatrace API.
+  apiToken: ""
+  # dynatrace.existingSecret -- If defined, will skip secret creation and instead assume that the referenced secret contains the key `api-token`.
+  existingSecret: null
+
 image:
   # image.name -- The container image to use for the Steadybit dynatrace extension.
   name: ghcr.io/steadybit/extension-dynatrace
@@ -77,7 +86,7 @@ topologySpreadConstraints: []
 affinity: {}
 
 # priorityClassName -- Priority class used to influence pod scheduling priority.
-priorityClassName: ""
+priorityClassName: null
 
 # podSecurityContext -- SecurityContext to apply to the pod.
 podSecurityContext: {}
