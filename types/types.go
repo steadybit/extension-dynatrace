@@ -18,3 +18,16 @@ type EventIngestResults struct {
 	EventIngestResults []EventIngestResult `json:"eventIngestResults"`
 	ReportCount        int                 `json:"reportCount"`
 }
+
+type EntitiesList struct {
+	Entities    []Entity `json:"entities"`
+	NextPageKey *string  `json:"nextPageKey"`
+	PageSize    int      `json:"pageSize"`
+	TotalCount  int      `json:"totalCount"`
+}
+
+type Entity struct {
+	DisplayName string `json:"displayName"`
+	EntityId    string `json:"entityId"`
+	Type        string `json:"type"`
+}

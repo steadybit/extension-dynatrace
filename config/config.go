@@ -42,16 +42,16 @@ func ValidateConfiguration() {
 }
 
 func (s *Specification) PostEvent(ctx context.Context, event types.EventIngest) (*types.EventIngestResults, *http.Response, error) {
-	url := fmt.Sprintf("%s/v2/events/ingest", s.ApiBaseUrl)
+	postUrl := fmt.Sprintf("%s/v2/events/ingest", s.ApiBaseUrl)
 	b, err := json.Marshal(event)
 	if err != nil {
 		log.Error().Err(err).Msgf("Failed to marshal event")
 		return nil, nil, err
 	}
 
-	log.Debug().Str("body", string(b)).Msgf("Posting event to %s", url)
+	log.Debug().Str("body", string(b)).Str(postUrl, postUrl).Msg("Posting event.")
 
-	request, err := http.NewRequest("POST", url, bytes.NewBuffer(b))
+	request, err := http.NewRequest("POST", postUrl, bytes.NewBuffer(b))
 	if err != nil {
 		log.Error().Err(err).Msgf("Failed to create request")
 		return nil, nil, err
@@ -79,6 +79,48 @@ func (s *Specification) PostEvent(ctx context.Context, event types.EventIngest) 
 	}
 
 	var result types.EventIngestResults
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		log.Error().Err(err).Str("body", string(body)).Msgf("Failed to parse body")
+		return nil, response, err
+	}
+
+	return &result, response, err
+}
+
+func (s *Specification) GetEntities(ctx context.Context, entitySelector string) (*types.EntitiesList, *http.Response, error) {
+	getUrl := fmt.Sprintf("%s/v2/entities?entitySelector=%s", s.ApiBaseUrl, entitySelector)
+
+	log.Debug().Str("url", getUrl).Msg("Find entities.")
+
+	request, err := http.NewRequest("GET", getUrl, nil)
+	if err != nil {
+		log.Error().Err(err).Msgf("Failed to create request")
+		return nil, nil, err
+	}
+	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
+	request.Header.Set("Authorization", fmt.Sprintf("Api-Token %s", s.ApiToken))
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		log.Error().Err(err).Msgf("Failed to execute request")
+		return nil, response, err
+	}
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Error().Err(err).Msgf("Failed to close response body")
+		}
+	}(response.Body)
+
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		log.Error().Err(err).Msgf("Failed to read body")
+		return nil, response, err
+	}
+
+	var result types.EntitiesList
 	err = json.Unmarshal(body, &result)
 	if err != nil {
 		log.Error().Err(err).Str("body", string(body)).Msgf("Failed to parse body")

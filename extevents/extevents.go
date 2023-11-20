@@ -29,6 +29,7 @@ func RegisterEventListenerHandlers() {
 
 type PostEventApi interface {
 	PostEvent(ctx context.Context, event types.EventIngest) (*types.EventIngestResults, *http.Response, error)
+	GetEntities(ctx context.Context, entitySelect string) (*types.EntitiesList, *http.Response, error)
 }
 
 var (
@@ -67,8 +68,8 @@ func onExperimentStarted(event *event_kit_api.EventRequestBody) (*types.EventIng
 		EventType:  "CUSTOM_INFO",
 		Title:      fmt.Sprintf("Steadybit experiment '%s / %g' started", event.ExperimentExecution.ExperimentKey, event.ExperimentExecution.ExecutionId),
 		Properties: props,
-		StartTime:  extutil.Ptr(event.ExperimentExecution.StartedTime.Unix()),
-		EndTime:    extutil.Ptr(event.ExperimentExecution.StartedTime.Unix()),
+		StartTime:  extutil.Ptr(event.EventTime.UnixMilli()),
+		EndTime:    extutil.Ptr(event.EventTime.UnixMilli()),
 	}, nil
 }
 
@@ -89,8 +90,8 @@ func onExperimentCompleted(event *event_kit_api.EventRequestBody) (*types.EventI
 		EventType:  "CUSTOM_INFO",
 		Title:      fmt.Sprintf("Steadybit experiment '%s / %g' ended", event.ExperimentExecution.ExperimentKey, event.ExperimentExecution.ExecutionId),
 		Properties: props,
-		StartTime:  extutil.Ptr(event.ExperimentExecution.EndedTime.Unix()),
-		EndTime:    extutil.Ptr(event.ExperimentExecution.EndedTime.Unix()),
+		StartTime:  extutil.Ptr(event.ExperimentExecution.EndedTime.UnixMilli()),
+		EndTime:    extutil.Ptr(event.ExperimentExecution.EndedTime.UnixMilli()),
 	}, nil
 }
 
@@ -130,8 +131,8 @@ func onExperimentTargetStarted(event *event_kit_api.EventRequestBody) (*types.Ev
 			getTargetName(*event.ExperimentStepTargetExecution)),
 		Properties:     props,
 		EntitySelector: getEntitySelector(*event.ExperimentStepTargetExecution),
-		StartTime:      extutil.Ptr(event.ExperimentStepTargetExecution.StartedTime.Unix()),
-		EndTime:        extutil.Ptr(event.ExperimentStepTargetExecution.StartedTime.Unix()),
+		StartTime:      extutil.Ptr(event.ExperimentStepTargetExecution.StartedTime.UnixMilli()),
+		EndTime:        extutil.Ptr(event.ExperimentStepTargetExecution.StartedTime.UnixMilli()),
 	}, nil
 }
 
@@ -161,8 +162,8 @@ func onExperimentTargetCompleted(event *event_kit_api.EventRequestBody) (*types.
 			getTargetName(*event.ExperimentStepTargetExecution)),
 		Properties:     props,
 		EntitySelector: getEntitySelector(*event.ExperimentStepTargetExecution),
-		StartTime:      extutil.Ptr(event.ExperimentStepTargetExecution.EndedTime.Unix()),
-		EndTime:        extutil.Ptr(event.ExperimentStepTargetExecution.EndedTime.Unix()),
+		StartTime:      extutil.Ptr(event.ExperimentStepTargetExecution.EndedTime.UnixMilli()),
+		EndTime:        extutil.Ptr(event.ExperimentStepTargetExecution.EndedTime.UnixMilli()),
 	}, nil
 }
 
@@ -278,23 +279,32 @@ func addTargetExecutionProperties(props map[string]string, targetExecution *even
 	props["steadybit.execution.id"] = fmt.Sprintf("%g", targetExecution.ExecutionId)
 	props["steadybit.execution.target.state"] = string(targetExecution.State)
 
-	addIfPresent(props, *targetExecution, "k8s.cluster-name", "dt.entity.kubernetes_cluster")
-	addIfPresent(props, *targetExecution, "k8s.namespace", "dt.entity.cloud_application_namespace")
-	addIfPresent(props, *targetExecution, "k8s.deployment", "dt.entity.cloud_application")
-	addIfPresent(props, *targetExecution, "k8s.pod.name", "dt.entity.cloud_application_instance")
+	addIfPresent(props, *targetExecution, "k8s.cluster-name", "KUBERNETES_CLUSTER", "dt.entity.kubernetes_cluster")
+	addIfPresent(props, *targetExecution, "k8s.namespace", "CLOUD_APPLICATION_NAMESPACE", "dt.entity.cloud_application_namespace")
+	addIfPresent(props, *targetExecution, "k8s.deployment", "CLOUD_APPLICATION", "dt.entity.cloud_application")
+	addIfPresent(props, *targetExecution, "k8s.pod.name", "CLOUD_APPLICATION_INSTANCE", "dt.entity.cloud_application_instance")
 	if _, ok := targetExecution.TargetAttributes["k8s.cluster-name"]; ok {
-		addIfPresent(props, *targetExecution, "container.host", "dt.entity.kubernetes_node")
-		addIfPresent(props, *targetExecution, "host.hostname", "dt.entity.kubernetes_node")
-		addIfPresent(props, *targetExecution, "application.hostname", "dt.entity.kubernetes_node")
-		addIfPresent(props, *targetExecution, "k8s.node.name", "dt.entity.kubernetes_node")
+		addIfPresent(props, *targetExecution, "container.host", "KUBERNETES_NODE", "dt.entity.kubernetes_node")
+		addIfPresent(props, *targetExecution, "host.hostname", "KUBERNETES_NODE", "dt.entity.kubernetes_node")
+		addIfPresent(props, *targetExecution, "application.hostname", "KUBERNETES_NODE", "dt.entity.kubernetes_node")
+		addIfPresent(props, *targetExecution, "k8s.node.name", "KUBERNETES_NODE", "dt.entity.kubernetes_node")
 	}
 }
 
-func addIfPresent(props map[string]string, target event_kit_api.ExperimentStepTargetExecution, steadybitAttribute string, dynatraceProperty string) {
+func addIfPresent(props map[string]string, target event_kit_api.ExperimentStepTargetExecution, steadybitAttribute string, entityType string, dynatraceProperty string) {
 	if values, ok := target.TargetAttributes[steadybitAttribute]; ok {
 		//We don't want to add one-to-many attributes to dynatrace. For example when attacking a host, we don't want to add all namespaces or pods which are running on that host.
 		if (len(values)) == 1 {
-			props[dynatraceProperty] = values[0]
+			entities, response, err := config.Config.GetEntities(context.Background(), fmt.Sprintf("type(\"%s\"),entityName.equals(\"%s\")", entityType, values[0]))
+			if err != nil {
+				log.Err(err).Msgf("Failed to find entities. Full response %v", response)
+			} else if response.StatusCode != 200 {
+				log.Error().Msgf("Dynatrace API responded with unexpected status code %d while getting entities. Full response: %v", response.StatusCode, response)
+			} else if len(entities.Entities) != 1 {
+				log.Warn().Msgf("Found multiple matching entities %+v", response)
+			} else {
+				props[dynatraceProperty] = entities.Entities[0].EntityId
+			}
 		}
 	}
 }
@@ -306,12 +316,14 @@ func parseBodyToEventRequestBody(body []byte) (event_kit_api.EventRequestBody, e
 }
 
 func sendDynatraceEvent(ctx context.Context, api PostEventApi, event *types.EventIngest) {
-	_, r, err := api.PostEvent(ctx, *event)
+	result, response, err := api.PostEvent(ctx, *event)
 
 	if err != nil {
-		log.Err(err).Msgf("Failed to send Dynatrace event. Full response %v", r)
-	} else if r.StatusCode != 201 {
+		log.Err(err).Msgf("Failed to send Dynatrace event. Full response %v", response)
+	} else if response.StatusCode != 201 {
 		log.Error().Msgf("Dynatrace API responded with unexpected status code %d while sending Event. Full response: %v",
-			r.StatusCode, r)
+			response.StatusCode, response)
+	} else {
+		log.Debug().Msgf("Successfully sent Dynatrace event. Response: %v", result)
 	}
 }
