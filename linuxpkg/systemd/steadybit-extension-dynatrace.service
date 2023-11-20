@@ -1,0 +1,18 @@
+[Unit]
+Description="steadybit extension dynatrace"
+After=syslog.target
+
+[Service]
+Type=simple
+ExecStart=/opt/steadybit/extension-dynatrace/extension-dynatrace
+EnvironmentFile=/etc/steadybit/extension-dynatrace
+User=steadybit
+Group=steadybit
+SuccessExitStatus=0 143
+Restart=on-failure
+RestartSec=5s
+StandardOutput=append:/var/log/steadybit-extension-dynatrace.log
+StandardError=append:/var/log/steadybit-extension-dynatrace.log
+
+[Install]
+WantedBy=multi-user.target
