@@ -23,7 +23,6 @@ func RegisterEventListenerHandlers() {
 	exthttp.RegisterHttpHandler("/events/experiment-started", handle(onExperimentStarted))
 	exthttp.RegisterHttpHandler("/events/experiment-completed", handle(onExperimentCompleted))
 	exthttp.RegisterHttpHandler("/events/experiment-step-started", handle(onExperimentStepStarted))
-	exthttp.RegisterHttpHandler("/events/experiment-step-completed", handle(onExperimentStepCompleted))
 	exthttp.RegisterHttpHandler("/events/experiment-target-started", handle(onExperimentTargetStarted))
 	exthttp.RegisterHttpHandler("/events/experiment-target-completed", handle(onExperimentTargetCompleted))
 }
@@ -74,6 +73,15 @@ func onExperimentStarted(event *event_kit_api.EventRequestBody) (*types.EventIng
 }
 
 func onExperimentCompleted(event *event_kit_api.EventRequestBody) (*types.EventIngest, error) {
+	stepExecutions.Range(func(key, value interface{}) bool {
+		stepExecution := value.(event_kit_api.ExperimentStepExecution)
+		if stepExecution.ExecutionId == event.ExperimentExecution.ExecutionId {
+			log.Debug().Msgf("Delete step execution data for id %.0f", stepExecution.ExecutionId)
+			stepExecutions.Delete(key)
+		}
+		return true
+	})
+
 	props := make(map[string]string)
 	addBaseProperties(props, event)
 	addExperimentExecutionProperties(props, event.ExperimentExecution)
@@ -93,14 +101,6 @@ func onExperimentStepStarted(event *event_kit_api.EventRequestBody) (*types.Even
 	if event.ExperimentStepExecution.ActionKind != nil && *event.ExperimentStepExecution.ActionKind == event_kit_api.Attack {
 		stepExecutions.Store(event.ExperimentStepExecution.Id, *event.ExperimentStepExecution)
 	}
-	return nil, nil
-}
-
-func onExperimentStepCompleted(event *event_kit_api.EventRequestBody) (*types.EventIngest, error) {
-	if event.ExperimentStepExecution == nil {
-		return nil, errors.New("missing ExperimentStepExecution in event")
-	}
-	stepExecutions.Delete(event.ExperimentStepExecution.Id)
 	return nil, nil
 }
 
