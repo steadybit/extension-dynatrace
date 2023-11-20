@@ -236,7 +236,7 @@ manifest should match snapshot with extra labels:
       labels:
         steadybit.com/discovery-disabled: "true"
         steadybit.com/extension: "true"
-        tags.datadoghq.com/service: steadybit-extension
+        xyz: abc
       name: RELEASE-NAME-steadybit-extension-dynatrace
       namespace: NAMESPACE
     spec:
@@ -253,7 +253,7 @@ manifest should match snapshot with extra labels:
             app.kubernetes.io/name: steadybit-extension-dynatrace
             steadybit.com/discovery-disabled: "true"
             steadybit.com/extension: "true"
-            tags.datadoghq.com/service: steadybit-extension
+            xyz: abc
         spec:
           containers:
             - env:
