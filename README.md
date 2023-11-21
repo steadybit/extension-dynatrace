@@ -20,6 +20,7 @@ by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environm
 ## Dynatrace Permissions
 
 The extension requires the following scopes:
+- `entities.read`
 - `events.ingest`
 
 ## Installation
