@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	ttlcache "github.com/jellydator/ttlcache/v3"
 	"github.com/rs/zerolog/log"
 	"github.com/steadybit/event-kit/go/event_kit_api"
 	"github.com/steadybit/extension-dynatrace/config"
@@ -17,9 +18,36 @@ import (
 	"github.com/steadybit/extension-kit/extutil"
 	"net/http"
 	"sync"
+	"time"
 )
 
 func RegisterEventListenerHandlers() {
+	loader := ttlcache.LoaderFunc[string, string](
+		func(c *ttlcache.Cache[string, string], key string) *ttlcache.Item[string, string] {
+			log.Debug().Str("entitySelector", key).Msg("Loading entity from Dynatrace API")
+			entities, response, err := config.Config.GetEntities(context.Background(), key)
+			if err != nil {
+				log.Err(err).Msgf("Failed to find entities. Full response %v", response)
+			} else if response.StatusCode != 200 {
+				log.Error().Msgf("Dynatrace API responded with unexpected status code %d while getting entities. Full response: %v", response.StatusCode, response)
+			} else if len(entities.Entities) != 1 {
+				log.Warn().Msgf("Found multiple matching entities %+v", response)
+			} else {
+				log.Debug().Msgf("Successfully loaded entity %s", entities.Entities[0].EntityId)
+				item := c.Set(key, entities.Entities[0].EntityId, ttlcache.DefaultTTL)
+				return item
+			}
+			log.Debug().Str("entitySelector", key).Msg("Entity not found. Caching empty result")
+			item := c.Set(key, "", ttlcache.DefaultTTL)
+			return item
+		},
+	)
+	entityCache = ttlcache.New[string, string](
+		ttlcache.WithLoader[string, string](loader),
+		ttlcache.WithTTL[string, string](30*time.Minute),
+	)
+	go entityCache.Start()
+
 	exthttp.RegisterHttpHandler("/events/experiment-started", handle(onExperimentStarted))
 	exthttp.RegisterHttpHandler("/events/experiment-completed", handle(onExperimentCompleted))
 	exthttp.RegisterHttpHandler("/events/experiment-step-started", handle(onExperimentStepStarted))
@@ -34,6 +62,7 @@ type PostEventApi interface {
 
 var (
 	stepExecutions = sync.Map{}
+	entityCache    *ttlcache.Cache[string, string]
 )
 
 type eventHandler func(event *event_kit_api.EventRequestBody) (*types.EventIngest, error)
@@ -295,15 +324,9 @@ func addIfPresent(props map[string]string, target event_kit_api.ExperimentStepTa
 	if values, ok := target.TargetAttributes[steadybitAttribute]; ok {
 		//We don't want to add one-to-many attributes to dynatrace. For example when attacking a host, we don't want to add all namespaces or pods which are running on that host.
 		if (len(values)) == 1 {
-			entities, response, err := config.Config.GetEntities(context.Background(), fmt.Sprintf("type(\"%s\"),entityName.equals(\"%s\")", entityType, values[0]))
-			if err != nil {
-				log.Err(err).Msgf("Failed to find entities. Full response %v", response)
-			} else if response.StatusCode != 200 {
-				log.Error().Msgf("Dynatrace API responded with unexpected status code %d while getting entities. Full response: %v", response.StatusCode, response)
-			} else if len(entities.Entities) != 1 {
-				log.Warn().Msgf("Found multiple matching entities %+v", response)
-			} else {
-				props[dynatraceProperty] = entities.Entities[0].EntityId
+			entity := entityCache.Get(fmt.Sprintf("type(\"%s\"),entityName.equals(\"%s\")", entityType, values[0]))
+			if entity != nil && len(entity.Value()) > 0 {
+				props[dynatraceProperty] = entity.Value()
 			}
 		}
 	}
