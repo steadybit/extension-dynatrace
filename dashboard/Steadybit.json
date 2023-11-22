@@ -1,0 +1,346 @@
+{
+	"version": 11,
+	"variables": [],
+	"tiles": {
+		"0": {
+			"type": "data",
+			"title": "",
+			"query": "fetch events\n| filter event.type==\"CUSTOM_INFO\"\n| filter isNotNull(steadybit.experiment.key)\n| filter isNull(steadybit.execution.target.state)\n| filterOut steadybit.execution.state==\"created\" or steadybit.execution.state==\"running\" or steadybit.execution.state==\"prepared\"\n| makeTimeseries count(), by:steadybit.execution.state, interval:10m\n",
+			"davis": {
+				"enabled": false
+			},
+			"visualization": "barChart",
+			"visualizationSettings": {
+				"thresholds": [],
+				"chartSettings": {
+					"gapPolicy": "connect",
+					"circleChartSettings": {
+						"groupingThresholdType": "relative",
+						"groupingThresholdValue": 0,
+						"valueType": "relative"
+					},
+					"categoryOverrides": {},
+					"categoricalBarChartSettings": {
+						"categoryAxis": "steadybit.execution.state",
+						"categoryAxisLabel": "steadybit.execution.state",
+						"valueAxis": "count",
+						"valueAxisLabel": "count"
+					},
+					"fieldMapping": {
+						"timestamp": "timestamp",
+						"fields": [
+							"dt.davis.impact_level"
+						],
+						"values": [
+							"dt.davis.timeout"
+						]
+					},
+					"valueRepresentation": "absolute",
+					"leftYAxisSettings": {
+						"min": "auto",
+						"max": "auto",
+						"label": "",
+						"scale": "linear"
+					},
+					"colorPalette": "categorical",
+					"xAxisScaling": "analyzedTimeframe",
+					"seriesOverrides": [
+						{
+							"seriesId": [
+								"failed"
+							],
+							"override": {
+								"color": {
+									"Default": "var(--dt-colors-charts-categorical-color-14-default, #d56b1a)"
+								}
+							}
+						},
+						{
+							"seriesId": [
+								"errored"
+							],
+							"override": {
+								"color": {
+									"Default": "var(--dt-colors-charts-categorical-color-12-default, #cd3741)"
+								}
+							}
+						},
+						{
+							"seriesId": [
+								"completed"
+							],
+							"override": {
+								"color": {
+									"Default": "var(--dt-colors-charts-vulnerability-status-resolved-default, #3e8e6a)"
+								}
+							}
+						}
+					]
+				},
+				"singleValue": {
+					"showLabel": true,
+					"label": "",
+					"prefixIcon": "",
+					"autoscale": true,
+					"alignment": "center"
+				},
+				"table": {
+					"rowDensity": "condensed",
+					"enableSparklines": false,
+					"hiddenColumns": [],
+					"lineWrapIds": [],
+					"columnWidths": {}
+				},
+				"unitsOverrides": [
+					{
+						"identifier": "total",
+						"unitCategory": "unspecified",
+						"baseUnit": "count",
+						"displayUnit": null,
+						"decimals": 0,
+						"suffix": "",
+						"delimiter": false,
+						"added": 1700497373057
+					}
+				]
+			}
+		},
+		"1": {
+			"type": "data",
+			"title": "",
+			"query": "fetch events\n| filter event.type==\"CUSTOM_INFO\"\n| filter isNotNull(steadybit.experiment.key)\n| filter isNull(steadybit.execution.target.state)\n| filter steadybit.execution.state==\"failed\"\n| summarize count=count()",
+			"davis": {
+				"enabled": false
+			},
+			"visualization": "singleValue",
+			"visualizationSettings": {
+				"thresholds": [],
+				"chartSettings": {
+					"gapPolicy": "connect",
+					"circleChartSettings": {
+						"groupingThresholdType": "relative",
+						"groupingThresholdValue": 0,
+						"valueType": "relative"
+					},
+					"categoryOverrides": {}
+				},
+				"singleValue": {
+					"showLabel": true,
+					"label": "Failed Experiments",
+					"prefixIcon": "",
+					"autoscale": true,
+					"alignment": "center"
+				},
+				"table": {
+					"rowDensity": "condensed",
+					"enableSparklines": false,
+					"hiddenColumns": [],
+					"lineWrapIds": [],
+					"columnWidths": {}
+				},
+				"unitsOverrides": []
+			}
+		},
+		"2": {
+			"type": "data",
+			"title": "",
+			"query": "fetch events\n| filter event.type==\"CUSTOM_INFO\"\n| filter isNotNull(steadybit.experiment.key)\n| filter isNull(steadybit.execution.target.state)\n| filter steadybit.execution.state==\"errored\"\n| summarize count=count()",
+			"davis": {
+				"enabled": false
+			},
+			"visualization": "singleValue",
+			"visualizationSettings": {
+				"thresholds": [],
+				"chartSettings": {
+					"gapPolicy": "connect",
+					"circleChartSettings": {
+						"groupingThresholdType": "relative",
+						"groupingThresholdValue": 0,
+						"valueType": "relative"
+					},
+					"categoryOverrides": {}
+				},
+				"singleValue": {
+					"showLabel": true,
+					"label": "Errored Experiments",
+					"prefixIcon": "",
+					"autoscale": true,
+					"alignment": "center"
+				},
+				"table": {
+					"rowDensity": "condensed",
+					"enableSparklines": false,
+					"hiddenColumns": [],
+					"lineWrapIds": [],
+					"columnWidths": {}
+				},
+				"unitsOverrides": []
+			}
+		},
+		"3": {
+			"type": "data",
+			"title": "",
+			"query": "fetch events\n| filter event.type==\"CUSTOM_INFO\"\n| filter isNotNull(steadybit.experiment.key)\n| filter isNull(steadybit.execution.target.state)\n| filter steadybit.execution.state==\"completed\"\n| summarize count=count()",
+			"davis": {
+				"enabled": false
+			},
+			"visualization": "singleValue",
+			"visualizationSettings": {
+				"thresholds": [],
+				"chartSettings": {
+					"gapPolicy": "connect",
+					"circleChartSettings": {
+						"groupingThresholdType": "relative",
+						"groupingThresholdValue": 0,
+						"valueType": "relative"
+					},
+					"categoryOverrides": {}
+				},
+				"singleValue": {
+					"showLabel": true,
+					"label": "Completed Experiments",
+					"prefixIcon": "",
+					"autoscale": true,
+					"alignment": "center"
+				},
+				"table": {
+					"rowDensity": "condensed",
+					"enableSparklines": false,
+					"hiddenColumns": [],
+					"lineWrapIds": [],
+					"columnWidths": {}
+				},
+				"unitsOverrides": []
+			}
+		},
+		"4": {
+			"type": "markdown",
+			"title": "",
+			"content": "![](https://steadybit-website-assets.s3.amazonaws.com/logo.png)\n[Open Platform](https://platform.steadybit.com)"
+		},
+		"5": {
+			"type": "data",
+			"title": "",
+			"query": "fetch events //, scanLimitGBytes: 500, samplingRatio: 1000\n| sort timestamp desc\n| filter steadybit.execution.id != \"\"\n| fields Time=timestamp,Event=event.name, Key=steadybit.experiment.key, Name=coalesce(steadybit.experiment.name,\"\"), Execution=steadybit.execution.id, Team=steadybit.team.key, Step=coalesce(steadybit.step.action.name,\"\")",
+			"davis": {
+				"enabled": false
+			},
+			"visualization": "table",
+			"visualizationSettings": {
+				"thresholds": [],
+				"chartSettings": {
+					"gapPolicy": "connect",
+					"circleChartSettings": {
+						"groupingThresholdType": "relative",
+						"groupingThresholdValue": 0,
+						"valueType": "relative"
+					},
+					"categoryOverrides": {},
+					"categoricalBarChartSettings": {
+						"categoryAxis": "dt.davis.impact_level",
+						"categoryAxisLabel": "dt.davis.impact_level",
+						"valueAxis": "dt.davis.timeout",
+						"valueAxisLabel": "dt.davis.timeout"
+					},
+					"fieldMapping": {
+						"timestamp": "timestamp",
+						"fields": [
+							"dt.davis.impact_level"
+						],
+						"values": [
+							"dt.davis.timeout"
+						]
+					}
+				},
+				"singleValue": {
+					"showLabel": true,
+					"label": "",
+					"prefixIcon": "",
+					"autoscale": true,
+					"alignment": "center"
+				},
+				"table": {
+					"rowDensity": "default",
+					"enableSparklines": false,
+					"hiddenColumns": [],
+					"lineWrapIds": [
+						[
+							"Time"
+						],
+						[
+							"Event"
+						],
+						[
+							"Key"
+						],
+						[
+							"Name"
+						],
+						[
+							"Execution"
+						],
+						[
+							"Team"
+						],
+						[
+							"Step"
+						]
+					],
+					"columnWidths": {
+						"[\"time\"]": 157.34375,
+						"[\"key\"]": 121.234375,
+						"[\"name\"]": 233.171875,
+						"[\"steadybit.execution.id\"]": 200,
+						"[\"Time\"]": 158,
+						"[\"Key\"]": 122,
+						"[\"Name\"]": 234,
+						"[\"Execution\"]": 123,
+						"[\"Team == coalesce(steadybit.team.key, \\\"\\\")\"]": 321.703125,
+						"[\"steadybit.team.key\"]": 181.359375,
+						"[\"Team\"]": 95,
+						"[\"Step\"]": 117,
+						"[\"Event\"]": 600
+					}
+				}
+			}
+		}
+	},
+	"layouts": {
+		"0": {
+			"x": 0,
+			"y": 3,
+			"w": 24,
+			"h": 7
+		},
+		"1": {
+			"x": 11,
+			"y": 0,
+			"w": 7,
+			"h": 3
+		},
+		"2": {
+			"x": 18,
+			"y": 0,
+			"w": 6,
+			"h": 3
+		},
+		"3": {
+			"x": 5,
+			"y": 0,
+			"w": 6,
+			"h": 3
+		},
+		"4": {
+			"x": 0,
+			"y": 0,
+			"w": 5,
+			"h": 3
+		},
+		"5": {
+			"x": 0,
+			"y": 10,
+			"w": 24,
+			"h": 6
+		}
+	}
+}
