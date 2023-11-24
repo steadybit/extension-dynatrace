@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/rs/zerolog/log"
@@ -42,58 +43,89 @@ func ValidateConfiguration() {
 }
 
 func (s *Specification) PostEvent(ctx context.Context, event types.EventIngest) (*types.EventIngestResults, *http.Response, error) {
-	postUrl := fmt.Sprintf("%s/v2/events/ingest", s.ApiBaseUrl)
 	b, err := json.Marshal(event)
 	if err != nil {
 		log.Error().Err(err).Msgf("Failed to marshal event")
 		return nil, nil, err
 	}
 
-	log.Debug().Str("body", string(b)).Str(postUrl, postUrl).Msg("Posting event.")
-
-	request, err := http.NewRequest("POST", postUrl, bytes.NewBuffer(b))
-	if err != nil {
-		log.Error().Err(err).Msgf("Failed to create request")
-		return nil, nil, err
-	}
-	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
-	request.Header.Set("Authorization", fmt.Sprintf("Api-Token %s", s.ApiToken))
-
-	client := &http.Client{}
-	response, err := client.Do(request)
-	if err != nil {
-		log.Error().Err(err).Msgf("Failed to execute request")
-		return nil, response, err
-	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Error().Err(err).Msgf("Failed to close response body")
-		}
-	}(response.Body)
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		log.Error().Err(err).Msgf("Failed to read body")
-		return nil, response, err
-	}
+	responseBody, response, err := s.do(fmt.Sprintf("%s/v2/events/ingest", s.ApiBaseUrl), "POST", b)
 
 	var result types.EventIngestResults
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		log.Error().Err(err).Str("body", string(body)).Msgf("Failed to parse body")
-		return nil, response, err
+	if responseBody != nil {
+		err = json.Unmarshal(responseBody, &result)
+		if err != nil {
+			log.Error().Err(err).Str("body", string(responseBody)).Msgf("Failed to parse response body")
+			return nil, response, err
+		}
+	}
+	return &result, response, err
+}
+
+func (s *Specification) GetEntities(ctx context.Context, entitySelector string) (*types.EntitiesList, *http.Response, error) {
+	responseBody, response, err := s.do(fmt.Sprintf("%s/v2/entities?entitySelector=%s", s.ApiBaseUrl, entitySelector), "GET", nil)
+
+	var result types.EntitiesList
+	if responseBody != nil {
+		err = json.Unmarshal(responseBody, &result)
+		if err != nil {
+			log.Error().Err(err).Str("body", string(responseBody)).Msgf("Failed to parse body")
+			return nil, response, err
+		}
 	}
 
 	return &result, response, err
 }
 
-func (s *Specification) GetEntities(ctx context.Context, entitySelector string) (*types.EntitiesList, *http.Response, error) {
-	getUrl := fmt.Sprintf("%s/v2/entities?entitySelector=%s", s.ApiBaseUrl, entitySelector)
+func (s *Specification) CreateMaintenanceWindow(ctx context.Context, maintenanceWindow types.CreateMaintenanceWindowRequest) (*string, *http.Response, error) {
+	objects := []types.CreateMaintenanceWindowRequest{maintenanceWindow}
 
-	log.Debug().Str("url", getUrl).Msg("Find entities.")
+	b, err := json.Marshal(objects)
+	if err != nil {
+		log.Error().Err(err).Msgf("Failed to marshal request")
+		return nil, nil, err
+	}
 
-	request, err := http.NewRequest("GET", getUrl, nil)
+	responseBody, response, err := s.do(fmt.Sprintf("%s/v2/settings/objects", s.ApiBaseUrl), "POST", b)
+
+	if response.StatusCode != 200 {
+		log.Error().Int("code", response.StatusCode).Err(err).Msgf("Unexpected response %+v", string(responseBody))
+		return nil, response, errors.New("unexpected response code")
+	}
+
+	var result []types.CreateMaintenanceWindowResponse
+	if responseBody != nil {
+		err = json.Unmarshal(responseBody, &result)
+		if err != nil {
+			log.Error().Err(err).Str("body", string(responseBody)).Msgf("Failed to parse response body")
+			return nil, response, err
+		}
+	}
+
+	if len(result) == 1 && result[0].Code == 200 {
+		return &result[0].ObjectId, response, err
+	} else {
+		log.Error().Err(err).Msgf("Unexpected response %+v", result)
+		return nil, response, errors.New("unexpected response")
+	}
+}
+
+func (s *Specification) DeleteMaintenanceWindow(ctx context.Context, maintenanceWindowId string) (*http.Response, error) {
+	_, response, err := s.do(fmt.Sprintf("%s/v2/settings/objects/%s", s.ApiBaseUrl, maintenanceWindowId), "DELETE", nil)
+	return response, err
+}
+
+func (s *Specification) do(url string, method string, body []byte) ([]byte, *http.Response, error) {
+	log.Debug().Str("url", url).Str("method", method).Msg("Requesting Dynatrace API")
+	if body != nil {
+		log.Debug().Int("len", len(body)).Str("body", string(body)).Msg("Request body")
+	}
+
+	var bodyReader io.Reader
+	if body != nil {
+		bodyReader = bytes.NewReader(body)
+	}
+	request, err := http.NewRequest(method, url, bodyReader)
 	if err != nil {
 		log.Error().Err(err).Msgf("Failed to create request")
 		return nil, nil, err
@@ -114,18 +146,11 @@ func (s *Specification) GetEntities(ctx context.Context, entitySelector string) 
 		}
 	}(response.Body)
 
-	body, err := io.ReadAll(response.Body)
+	responseBody, err := io.ReadAll(response.Body)
 	if err != nil {
 		log.Error().Err(err).Msgf("Failed to read body")
 		return nil, response, err
 	}
 
-	var result types.EntitiesList
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		log.Error().Err(err).Str("body", string(body)).Msgf("Failed to parse body")
-		return nil, response, err
-	}
-
-	return &result, response, err
+	return responseBody, response, err
 }

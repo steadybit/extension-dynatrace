@@ -12,6 +12,7 @@ import (
 	"github.com/steadybit/event-kit/go/event_kit_api"
 	"github.com/steadybit/extension-dynatrace/config"
 	"github.com/steadybit/extension-dynatrace/extevents"
+	"github.com/steadybit/extension-dynatrace/extmaintenance"
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/exthealth"
 	"github.com/steadybit/extension-kit/exthttp"
@@ -34,6 +35,7 @@ func main() {
 	exthttp.RegisterHttpHandler("/", exthttp.GetterAsHandler(getExtensionList))
 	extevents.RegisterEventListenerHandlers()
 
+	action_kit_sdk.RegisterAction(extmaintenance.NewMaintenanceAction())
 	action_kit_sdk.RegisterCoverageEndpoints()
 	action_kit_sdk.InstallSignalHandler()
 

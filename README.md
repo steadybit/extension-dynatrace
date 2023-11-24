@@ -22,6 +22,7 @@ by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environm
 The extension requires the following scopes:
 - `entities.read`
 - `events.ingest`
+- `settings.write` (if you want to use the "Create Maintenance Window" action)
 
 ## Installation
 
