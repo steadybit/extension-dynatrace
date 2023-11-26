@@ -9,6 +9,7 @@ import (
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
+	"github.com/steadybit/discovery-kit/go/discovery_kit_sdk"
 	"github.com/steadybit/event-kit/go/event_kit_api"
 	"github.com/steadybit/extension-dynatrace/config"
 	"github.com/steadybit/extension-dynatrace/extevents"
@@ -55,13 +56,8 @@ type ExtensionListResponse struct {
 
 func getExtensionList() ExtensionListResponse {
 	return ExtensionListResponse{
-		ActionList: action_kit_sdk.GetActionList(),
-		DiscoveryList: discovery_kit_api.DiscoveryList{
-			Discoveries:           []discovery_kit_api.DescribingEndpointReference{},
-			TargetTypes:           []discovery_kit_api.DescribingEndpointReference{},
-			TargetAttributes:      []discovery_kit_api.DescribingEndpointReference{},
-			TargetEnrichmentRules: []discovery_kit_api.DescribingEndpointReference{},
-		},
+		ActionList:    action_kit_sdk.GetActionList(),
+		DiscoveryList: discovery_kit_sdk.GetDiscoveryList(),
 		EventListenerList: event_kit_api.EventListenerList{
 			EventListeners: []event_kit_api.EventListener{
 				{
