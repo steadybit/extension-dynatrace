@@ -48,7 +48,7 @@ const DontDetectProblems = "DONT_DETECT_PROBLEMS"
 
 func (m *CreateMaintenanceWindowAction) Describe() action_kit_api.ActionDescription {
 	return action_kit_api.ActionDescription{
-		Id:          maintenanceActionId,
+		Id:          MaintenanceActionId,
 		Label:       "Create Maintenance Window",
 		Description: "Create a Maintenance Window for a given duration.",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
@@ -65,28 +65,6 @@ func (m *CreateMaintenanceWindowAction) Describe() action_kit_api.ActionDescript
 				DefaultValue: extutil.Ptr("30s"),
 				Order:        extutil.Ptr(0),
 				Required:     extutil.Ptr(true),
-			},
-			{
-				Name:         "suppressionType",
-				Label:        "Problem detection and alerting",
-				Type:         action_kit_api.String,
-				DefaultValue: extutil.Ptr(DetectProblemsAndAlert),
-				Options: extutil.Ptr([]action_kit_api.ParameterOption{
-					action_kit_api.ExplicitParameterOption{
-						Value: DetectProblemsAndAlert,
-						Label: "Detect problems and alert",
-					},
-					action_kit_api.ExplicitParameterOption{
-						Value: DetectProblemsDontAlert,
-						Label: "Detect problems but don't alert",
-					},
-					action_kit_api.ExplicitParameterOption{
-						Value: DontDetectProblems,
-						Label: "Disable problem detection during maintenance",
-					},
-				}),
-				Order:    extutil.Ptr(1),
-				Required: extutil.Ptr(true),
 			},
 			{
 				Name:         "suppressionType",

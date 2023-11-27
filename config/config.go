@@ -50,6 +50,9 @@ func (s *Specification) PostEvent(ctx context.Context, event types.EventIngest) 
 	}
 
 	responseBody, response, err := s.do(fmt.Sprintf("%s/v2/events/ingest", s.ApiBaseUrl), "POST", b)
+	if err != nil {
+		return nil, response, err
+	}
 
 	var result types.EventIngestResults
 	if responseBody != nil {
@@ -64,6 +67,9 @@ func (s *Specification) PostEvent(ctx context.Context, event types.EventIngest) 
 
 func (s *Specification) GetEntities(ctx context.Context, entitySelector string) (*types.EntitiesList, *http.Response, error) {
 	responseBody, response, err := s.do(fmt.Sprintf("%s/v2/entities?entitySelector=%s", s.ApiBaseUrl, entitySelector), "GET", nil)
+	if err != nil {
+		return nil, response, err
+	}
 
 	var result types.EntitiesList
 	if responseBody != nil {
@@ -87,6 +93,9 @@ func (s *Specification) CreateMaintenanceWindow(ctx context.Context, maintenance
 	}
 
 	responseBody, response, err := s.do(fmt.Sprintf("%s/v2/settings/objects", s.ApiBaseUrl), "POST", b)
+	if err != nil {
+		return nil, response, err
+	}
 
 	if response.StatusCode != 200 {
 		log.Error().Int("code", response.StatusCode).Err(err).Msgf("Unexpected response %+v", string(responseBody))
