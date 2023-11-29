@@ -63,13 +63,12 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 				Required:     extutil.Ptr(true),
 			},
 			{
-				Name:         "entitySelector",
-				Label:        "Entity Selector",
-				Description:  extutil.Ptr("Filter Problems by an Dynatrace entity selector. If empty, all problems are considered."),
-				Type:         action_kit_api.String,
-				DefaultValue: extutil.Ptr("type(\"CLOUD_APPLICATION\")"),
-				Order:        extutil.Ptr(2),
-				Required:     extutil.Ptr(false),
+				Name:        "entitySelector",
+				Label:       "Entity Selector",
+				Description: extutil.Ptr("Filter Problems by an Dynatrace entity selector. If empty, all problems are considered."),
+				Type:        action_kit_api.String,
+				Order:       extutil.Ptr(2),
+				Required:    extutil.Ptr(false),
 			},
 			{
 				Name:        "condition",
@@ -196,7 +195,7 @@ func ProblemCheckStatus(ctx context.Context, state *ProblemCheckState, api Probl
 		}
 		if state.Condition == conditionAtLeastOneProblem && len(problems) == 0 {
 			checkError = extutil.Ptr(action_kit_api.ActionKitError{
-				Title:  fmt.Sprintf("At least one problem expected, but no problems found."),
+				Title:  "At least one problem expected, but no problems found.",
 				Status: extutil.Ptr(action_kit_api.Failed),
 			})
 		}
@@ -211,12 +210,12 @@ func ProblemCheckStatus(ctx context.Context, state *ProblemCheckState, api Probl
 		if completed && !state.ConditionCheckSuccess {
 			if state.Condition == conditionNoProblems {
 				checkError = extutil.Ptr(action_kit_api.ActionKitError{
-					Title:  fmt.Sprintf("No problem expected, but problems found."),
+					Title:  "No problem expected, but problems found.",
 					Status: extutil.Ptr(action_kit_api.Failed),
 				})
 			} else if state.Condition == conditionAtLeastOneProblem {
 				checkError = extutil.Ptr(action_kit_api.ActionKitError{
-					Title:  fmt.Sprintf("At least one problem expected, but no problems found."),
+					Title:  "At least one problem expected, but no problems found.",
 					Status: extutil.Ptr(action_kit_api.Failed),
 				})
 			}
