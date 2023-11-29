@@ -14,6 +14,7 @@ import (
 	"github.com/steadybit/extension-dynatrace/config"
 	"github.com/steadybit/extension-dynatrace/extevents"
 	"github.com/steadybit/extension-dynatrace/extmaintenance"
+	"github.com/steadybit/extension-dynatrace/extproblems"
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/exthealth"
 	"github.com/steadybit/extension-kit/exthttp"
@@ -37,6 +38,7 @@ func main() {
 	extevents.RegisterEventListenerHandlers()
 
 	action_kit_sdk.RegisterAction(extmaintenance.NewMaintenanceAction())
+	action_kit_sdk.RegisterAction(extproblems.NewProblemCheckAction())
 	action_kit_sdk.RegisterCoverageEndpoints()
 	action_kit_sdk.InstallSignalHandler()
 

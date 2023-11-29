@@ -23,6 +23,7 @@ The extension requires the following scopes:
 - `entities.read`
 - `events.ingest`
 - `settings.write` (if you want to use the "Create Maintenance Window" action)
+- `problems.read` (if you want to use the "Check Problem" action)
 
 ## Installation
 

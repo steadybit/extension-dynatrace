@@ -66,3 +66,21 @@ type Entity struct {
 	EntityId    string `json:"entityId"`
 	Type        string `json:"type"`
 }
+
+type GetProblemsResponse struct {
+	TotalCount  int       `json:"totalCount"`
+	PageSize    int       `json:"pageSize"`
+	NextPageKey *string   `json:"nextPageKey"`
+	Problems    []Problem `json:"problems"`
+}
+
+type Problem struct {
+	ProblemId        string          `json:"problemId"`
+	DisplayId        string          `json:"displayId"`
+	Title            string          `json:"title"`
+	AffectedEntities []ProblemEntity `json:"affectedEntities"`
+}
+
+type ProblemEntity struct {
+	Name string `json:"name"`
+}

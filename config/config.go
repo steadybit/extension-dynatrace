@@ -15,6 +15,7 @@ import (
 	"github.com/steadybit/extension-dynatrace/types"
 	"io"
 	"net/http"
+	"time"
 )
 
 // Specification is the configuration specification for the extension. Configuration values can be applied
@@ -42,7 +43,7 @@ func ValidateConfiguration() {
 	// You may optionally validate the configuration here.
 }
 
-func (s *Specification) PostEvent(ctx context.Context, event types.EventIngest) (*types.EventIngestResults, *http.Response, error) {
+func (s *Specification) PostEvent(_ context.Context, event types.EventIngest) (*types.EventIngestResults, *http.Response, error) {
 	b, err := json.Marshal(event)
 	if err != nil {
 		log.Error().Err(err).Msgf("Failed to marshal event")
@@ -65,7 +66,7 @@ func (s *Specification) PostEvent(ctx context.Context, event types.EventIngest) 
 	return &result, response, err
 }
 
-func (s *Specification) GetEntities(ctx context.Context, entitySelector string) (*types.EntitiesList, *http.Response, error) {
+func (s *Specification) GetEntities(_ context.Context, entitySelector string) (*types.EntitiesList, *http.Response, error) {
 	responseBody, response, err := s.do(fmt.Sprintf("%s/v2/entities?entitySelector=%s", s.ApiBaseUrl, entitySelector), "GET", nil)
 	if err != nil {
 		return nil, response, err
@@ -83,7 +84,7 @@ func (s *Specification) GetEntities(ctx context.Context, entitySelector string) 
 	return &result, response, err
 }
 
-func (s *Specification) CreateMaintenanceWindow(ctx context.Context, maintenanceWindow types.CreateMaintenanceWindowRequest) (*string, *http.Response, error) {
+func (s *Specification) CreateMaintenanceWindow(_ context.Context, maintenanceWindow types.CreateMaintenanceWindowRequest) (*string, *http.Response, error) {
 	objects := []types.CreateMaintenanceWindowRequest{maintenanceWindow}
 
 	b, err := json.Marshal(objects)
@@ -119,9 +120,37 @@ func (s *Specification) CreateMaintenanceWindow(ctx context.Context, maintenance
 	}
 }
 
-func (s *Specification) DeleteMaintenanceWindow(ctx context.Context, maintenanceWindowId string) (*http.Response, error) {
+func (s *Specification) DeleteMaintenanceWindow(_ context.Context, maintenanceWindowId string) (*http.Response, error) {
 	_, response, err := s.do(fmt.Sprintf("%s/v2/settings/objects/%s", s.ApiBaseUrl, maintenanceWindowId), "DELETE", nil)
 	return response, err
+}
+
+func (s *Specification) GetProblems(_ context.Context, from time.Time, entitySelector *string) ([]types.Problem, *http.Response, error) {
+	url := fmt.Sprintf("%s/v2/problems?problemSelector=status(\"OPEN\")&pageSize=500", s.ApiBaseUrl)
+	if entitySelector != nil {
+		url = fmt.Sprintf("%s&entitySelector=%s", url, *entitySelector)
+	}
+
+	responseBody, response, err := s.do(url, "GET", nil)
+	if err != nil {
+		return nil, response, err
+	}
+
+	if response.StatusCode != 200 {
+		log.Error().Int("code", response.StatusCode).Err(err).Msgf("Unexpected response %+v", string(responseBody))
+		return nil, response, errors.New("unexpected response code")
+	}
+
+	var result types.GetProblemsResponse
+	if responseBody != nil {
+		err = json.Unmarshal(responseBody, &result)
+		if err != nil {
+			log.Error().Err(err).Str("body", string(responseBody)).Msgf("Failed to parse body")
+			return nil, response, err
+		}
+	}
+
+	return result.Problems, response, err
 }
 
 func (s *Specification) do(url string, method string, body []byte) ([]byte, *http.Response, error) {

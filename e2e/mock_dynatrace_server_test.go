@@ -26,6 +26,9 @@ func createMockDynatraceServer() *httptest.Server {
 				_, _ = w.Write(maintenanceWindowCreated())
 			} else if strings.HasPrefix(r.URL.Path, "/v2/settings/objects/") && r.Method == http.MethodDelete {
 				w.WriteHeader(http.StatusNoContent)
+			} else if r.URL.Path == "/v2/problems" && r.Method == http.MethodGet {
+				w.WriteHeader(http.StatusOK)
+				_, _ = w.Write(problems())
 			} else {
 				w.WriteHeader(http.StatusBadRequest)
 			}
@@ -43,4 +46,50 @@ func maintenanceWindowCreated() []byte {
         "objectId": "MOCKED-MAINTENANCE-WINDOW-ID"
     }
 ]`)
+}
+
+func problems() []byte {
+	return []byte(`{
+    "totalCount": 1,
+    "pageSize": 50,
+    "problems": [
+        {
+            "problemId": "-703143834675302702_1701158040000V2",
+            "displayId": "P-2311100",
+            "title": "Container restarts",
+            "impactLevel": "APPLICATION",
+            "severityLevel": "ERROR",
+            "status": "CLOSED",
+            "affectedEntities": [
+                {
+                    "entityId": {
+                        "id": "CLOUD_APPLICATION-7DA5F4D930A3CA81",
+                        "type": "CLOUD_APPLICATION"
+                    },
+                    "name": "fashion-bestseller"
+                }
+            ],
+            "impactedEntities": [
+                {
+                    "entityId": {
+                        "id": "CLOUD_APPLICATION-7DA5F4D930A3CA81",
+                        "type": "CLOUD_APPLICATION"
+                    },
+                    "name": "fashion-bestseller"
+                }
+            ],
+            "rootCauseEntity": null,
+            "managementZones": [],
+            "entityTags": [],
+            "problemFilters": [
+                {
+                    "id": "c21f969b-5f03-333d-83e0-4f8f136e7682",
+                    "name": "Default"
+                }
+            ],
+            "startTime": 1701158040000,
+            "endTime": 1701158523979
+        }
+    ]
+  }`)
 }
