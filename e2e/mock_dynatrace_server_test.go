@@ -21,12 +21,12 @@ func createMockDynatraceServer() *httptest.Server {
 		Config: &http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			log.Info().Str("path", r.URL.Path).Str("method", r.Method).Str("query", r.URL.RawQuery).Msg("Request received")
 			Requests = append(Requests, fmt.Sprintf("%s-%s", r.Method, r.URL.Path))
-			if r.URL.Path == "/v2/settings/objects" && r.Method == http.MethodPost {
+			if r.URL.Path == "/api/v2/settings/objects" && r.Method == http.MethodPost {
 				w.WriteHeader(http.StatusOK)
 				_, _ = w.Write(maintenanceWindowCreated())
-			} else if strings.HasPrefix(r.URL.Path, "/v2/settings/objects/") && r.Method == http.MethodDelete {
+			} else if strings.HasPrefix(r.URL.Path, "/api/v2/settings/objects/") && r.Method == http.MethodDelete {
 				w.WriteHeader(http.StatusNoContent)
-			} else if r.URL.Path == "/v2/problems" && r.Method == http.MethodGet {
+			} else if r.URL.Path == "/api/v2/problems" && r.Method == http.MethodGet {
 				w.WriteHeader(http.StatusOK)
 				_, _ = w.Write(problems())
 			} else {

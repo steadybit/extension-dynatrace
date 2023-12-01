@@ -4,6 +4,7 @@
 package e2e
 
 import (
+	"fmt"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_test/e2e"
 	"github.com/steadybit/extension-dynatrace/extmaintenance"
@@ -16,12 +17,14 @@ import (
 	"time"
 )
 
+var port string
+
 func TestWithMinikube(t *testing.T) {
 	extlogging.InitZeroLog()
 	server := createMockDynatraceServer()
 	defer server.Close()
 	split := strings.SplitAfter(server.URL, ":")
-	port := split[len(split)-1]
+	port = split[len(split)-1]
 
 	extFactory := e2e.HelmExtensionFactory{
 		Name: "extension-dynatrace",
@@ -30,7 +33,7 @@ func TestWithMinikube(t *testing.T) {
 			return []string{
 				"--set", "logging.level=debug",
 				"--set", "dynatrace.apiToken=api-token-123",
-				"--set", "dynatrace.apiBaseUrl=http://host.minikube.internal:" + port,
+				"--set", fmt.Sprintf("dynatrace.apiBaseUrl=http://host.minikube.internal:%s/api", port),
 			}
 		},
 	}
@@ -62,8 +65,8 @@ func testCreateMaintenanceWindow(t *testing.T, m *e2e.Minikube, e *e2e.Extension
 	require.NoError(t, err)
 	err = action.Wait()
 	require.NoError(t, err)
-	require.Contains(t, Requests, "POST-/v2/settings/objects")
-	require.Contains(t, Requests, "DELETE-/v2/settings/objects/MOCKED-MAINTENANCE-WINDOW-ID")
+	require.Contains(t, Requests, "POST-/api/v2/settings/objects")
+	require.Contains(t, Requests, "DELETE-/api/v2/settings/objects/MOCKED-MAINTENANCE-WINDOW-ID")
 }
 
 func testCheckProblem(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
@@ -94,7 +97,9 @@ func testCheckProblem(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 	metrics := action.Metrics()
 
 	for _, metric := range metrics {
-		assert.Equal(t, metric.Metric["dynatrace.problem.id"], "-703143834675302702_1701158040000V2")
-		assert.Equal(t, metric.Metric["dynatrace.problem.displayId"], "P-2311100")
+		problemId := "-703143834675302702_1701158040000V2"
+		assert.Equal(t, problemId, metric.Metric["dynatrace.problem.id"])
+		assert.Equal(t, "P-2311100", metric.Metric["dynatrace.problem.displayId"])
+		assert.Equal(t, fmt.Sprintf("http://host.minikube.internal:%s/ui/apps/dynatrace.classic.problems/#problems/problemdetails;pid=%s", port, problemId), metric.Metric["url"])
 	}
 }
