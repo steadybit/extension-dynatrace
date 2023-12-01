@@ -165,8 +165,18 @@ func (m *ProblemCheckAction) Prepare(_ context.Context, state *ProblemCheckState
 	return nil, nil
 }
 
-func (m *ProblemCheckAction) Start(_ context.Context, _ *ProblemCheckState) (*action_kit_api.StartResult, error) {
-	return nil, nil
+func (m *ProblemCheckAction) Start(ctx context.Context, state *ProblemCheckState) (*action_kit_api.StartResult, error) {
+	statusResult, err := ProblemCheckStatus(ctx, state, &config.Config)
+	if statusResult == nil {
+		return nil, err
+	}
+	startResult := action_kit_api.StartResult{
+		Artifacts: statusResult.Artifacts,
+		Error:     statusResult.Error,
+		Messages:  statusResult.Messages,
+		Metrics:   statusResult.Metrics,
+	}
+	return &startResult, err
 }
 
 func (m *ProblemCheckAction) Status(ctx context.Context, state *ProblemCheckState) (*action_kit_api.StatusResult, error) {
