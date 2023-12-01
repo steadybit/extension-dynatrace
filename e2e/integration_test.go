@@ -17,14 +17,12 @@ import (
 	"time"
 )
 
-var port string
-
 func TestWithMinikube(t *testing.T) {
 	extlogging.InitZeroLog()
 	server := createMockDynatraceServer()
 	defer server.Close()
 	split := strings.SplitAfter(server.URL, ":")
-	port = split[len(split)-1]
+	port := split[len(split)-1]
 
 	extFactory := e2e.HelmExtensionFactory{
 		Name: "extension-dynatrace",
@@ -34,6 +32,7 @@ func TestWithMinikube(t *testing.T) {
 				"--set", "logging.level=debug",
 				"--set", "dynatrace.apiToken=api-token-123",
 				"--set", fmt.Sprintf("dynatrace.apiBaseUrl=http://host.minikube.internal:%s/api", port),
+				"--set", "dynatrace.uiBaseUrl=http://mock/ui",
 			}
 		},
 	}
@@ -100,6 +99,6 @@ func testCheckProblem(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 		problemId := "-703143834675302702_1701158040000V2"
 		assert.Equal(t, problemId, metric.Metric["dynatrace.problem.id"])
 		assert.Equal(t, "P-2311100", metric.Metric["dynatrace.problem.displayId"])
-		assert.Equal(t, fmt.Sprintf("http://host.minikube.internal:%s/ui/apps/dynatrace.classic.problems/#problems/problemdetails;pid=%s", port, problemId), metric.Metric["url"])
+		assert.Equal(t, fmt.Sprintf("http://mock/ui/apps/dynatrace.classic.problems/#problems/problemdetails;pid=%s", problemId), metric.Metric["url"])
 	}
 }

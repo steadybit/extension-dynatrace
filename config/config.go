@@ -24,6 +24,8 @@ import (
 type Specification struct {
 	// The Dynatrace API Base Url, like 'https://{your-environment-id}.live.dynatrace.com/api' or 'https://{your-domain}/e/{your-environment-id}/api'
 	ApiBaseUrl string `json:"apiBaseUrl" split_words:"true" required:"true"`
+	// The Dynatrace UI Base Url, like 'https://{your-environment-id}.apps.dynatrace.com/ui'
+	UiBaseUrl string `json:"uiBaseUrl" split_words:"true" required:"true"`
 	// The Dynatrace API Token
 	ApiToken string `json:"apiToken" split_words:"true" required:"true"`
 }

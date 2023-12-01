@@ -257,7 +257,7 @@ func toMetric(problem types.Problem, now time.Time) action_kit_api.Metric {
 			"dynatrace.problem.displayId": problem.DisplayId,
 			"state":                       "danger",
 			"tooltip":                     tooltip,
-			"url":                         fmt.Sprintf("%s/ui/apps/dynatrace.classic.problems/#problems/problemdetails;pid=%s", config.Config.ApiBaseUrl[:len(config.Config.ApiBaseUrl)-len("/api")], problem.ProblemId),
+			"url":                         fmt.Sprintf("%s/apps/dynatrace.classic.problems/#problems/problemdetails;pid=%s", config.Config.UiBaseUrl, problem.ProblemId),
 		},
 		Timestamp: now,
 		Value:     0,

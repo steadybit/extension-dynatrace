@@ -39,6 +39,8 @@ manifest should match snapshot using podAnnotations and Labels:
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
                   value: null
+                - name: STEADYBIT_EXTENSION_UI_BASE_URL
+                  value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
@@ -123,6 +125,8 @@ manifest should match snapshot with TLS:
                       key: api-token
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
+                - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
@@ -211,6 +215,8 @@ manifest should match snapshot with extra env vars:
                       key: api-token
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
+                - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
                 - name: FOO
                   value: bar
@@ -302,6 +308,8 @@ manifest should match snapshot with extra labels:
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
                   value: null
+                - name: STEADYBIT_EXTENSION_UI_BASE_URL
+                  value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
@@ -388,6 +396,8 @@ manifest should match snapshot with mutual TLS:
                       key: api-token
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
+                - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
@@ -490,6 +500,8 @@ manifest should match snapshot with mutual TLS using containerPaths:
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
                   value: null
+                - name: STEADYBIT_EXTENSION_UI_BASE_URL
+                  value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
@@ -570,6 +582,8 @@ manifest should match snapshot with podSecurityContext:
                       key: api-token
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
+                - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
@@ -654,6 +668,8 @@ manifest should match snapshot with priority class:
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
                   value: null
+                - name: STEADYBIT_EXTENSION_UI_BASE_URL
+                  value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always
               livenessProbe:
@@ -735,6 +751,8 @@ manifest should match snapshot without TLS:
                       key: api-token
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
+                  value: null
+                - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
               image: ghcr.io/steadybit/extension-dynatrace:latest
               imagePullPolicy: Always

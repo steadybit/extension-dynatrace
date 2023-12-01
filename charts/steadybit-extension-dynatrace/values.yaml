@@ -5,6 +5,8 @@
 dynatrace:
   # dynatrace.apiBaseUrl -- The API base url for the Dynatrace API, like `https://{your-environment-id}.live.dynatrace.com/api`
   apiBaseUrl: ""
+  # dynatrace.uiBaseUrl -- The Dynatrace UI Base Url, like 'https://{your-environment-id}.apps.dynatrace.com/ui'
+  uiBaseUrl: ""
   # dynatrace.apiToken -- The API Token used to access the Dynatrace API.
   apiToken: ""
   # dynatrace.existingSecret -- If defined, will skip secret creation and instead assume that the referenced secret contains the key `api-token`.
