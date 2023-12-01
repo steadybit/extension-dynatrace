@@ -121,7 +121,7 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 					From: "dynatrace.problem.id",
 				},
 				Label: action_kit_api.StateOverTimeWidgetLabelConfig{
-					From: "dynatrace.problem.displayId",
+					From: "dynatrace.problem.title",
 				},
 				State: action_kit_api.StateOverTimeWidgetStateConfig{
 					From: "state",
@@ -245,7 +245,7 @@ func ProblemCheckStatus(ctx context.Context, state *ProblemCheckState, api Probl
 }
 
 func toMetric(problem types.Problem, now time.Time) action_kit_api.Metric {
-	tooltip := problem.Title
+	tooltip := problem.DisplayId
 	for _, entity := range problem.AffectedEntities {
 		tooltip += fmt.Sprintf("\n- %s", entity.Name)
 	}
@@ -253,11 +253,11 @@ func toMetric(problem types.Problem, now time.Time) action_kit_api.Metric {
 	return action_kit_api.Metric{
 		Name: extutil.Ptr("dynatrace_problems"),
 		Metric: map[string]string{
-			"dynatrace.problem.id":        problem.ProblemId,
-			"dynatrace.problem.displayId": problem.DisplayId,
-			"state":                       "danger",
-			"tooltip":                     tooltip,
-			"url":                         fmt.Sprintf("%s/apps/dynatrace.classic.problems/#problems/problemdetails;pid=%s", config.Config.UiBaseUrl, problem.ProblemId),
+			"dynatrace.problem.id":    problem.ProblemId,
+			"dynatrace.problem.title": problem.Title,
+			"state":                   "danger",
+			"tooltip":                 tooltip,
+			"url":                     fmt.Sprintf("%s/apps/dynatrace.classic.problems/#problems/problemdetails;pid=%s", config.Config.UiBaseUrl, problem.ProblemId),
 		},
 		Timestamp: now,
 		Value:     0,
