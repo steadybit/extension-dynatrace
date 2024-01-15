@@ -128,9 +128,7 @@ func onExperimentStepStarted(event *event_kit_api.EventRequestBody) (*types.Even
 	if event.ExperimentStepExecution == nil {
 		return nil, errors.New("missing ExperimentStepExecution in event")
 	}
-	if event.ExperimentStepExecution.ActionKind != nil && *event.ExperimentStepExecution.ActionKind == event_kit_api.Attack {
-		stepExecutions.Store(event.ExperimentStepExecution.Id, *event.ExperimentStepExecution)
-	}
+	stepExecutions.Store(event.ExperimentStepExecution.Id, *event.ExperimentStepExecution)
 	return nil, nil
 }
 
@@ -145,6 +143,9 @@ func onExperimentTargetStarted(event *event_kit_api.EventRequestBody) (*types.Ev
 		return nil, nil
 	}
 	stepExecution := v.(event_kit_api.ExperimentStepExecution)
+	if stepExecution.ActionKind == nil || *stepExecution.ActionKind != event_kit_api.Attack {
+		return nil, nil
+	}
 
 	props := make(map[string]string)
 	addBaseProperties(props, event)
@@ -176,6 +177,9 @@ func onExperimentTargetCompleted(event *event_kit_api.EventRequestBody) (*types.
 		return nil, nil
 	}
 	stepExecution := v.(event_kit_api.ExperimentStepExecution)
+	if stepExecution.ActionKind == nil || *stepExecution.ActionKind != event_kit_api.Attack {
+		return nil, nil
+	}
 
 	props := make(map[string]string)
 	addBaseProperties(props, event)
