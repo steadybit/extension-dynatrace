@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.0.2 (Next release)
+## v1.0.2
 
  - Update dependencies
  - Fix warnings `Could not find step infos for step execution ...` in logs
