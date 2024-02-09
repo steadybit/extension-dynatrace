@@ -67,7 +67,7 @@ information.
 ### Linux Package
 
 Please use
-our [outpost-linux.sh script](https://docs.steadybit.com/install-and-configure/install-outpost-agent-preview/install-on-linux-hosts)
+our [agent-linux.sh script](https://docs.steadybit.com/install-and-configure/install-agent/install-on-linux-hosts)
 to install the extension on your Linux machine.
 The script will download the latest version of the extension and install it using the package manager.
 
