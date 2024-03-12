@@ -14,8 +14,9 @@ our [Reliability Hub](https://hub.steadybit.com/extension/com.steadybit.extensio
 | `STEADYBIT_EXTENSION_API_BASE_URL` |            | The Dynatrace API Base Url, like `https://{your-environment-id}.live.dynatrace.com/api`                                                                  | yes      |         |
 | `STEADYBIT_EXTENSION_API_TOKEN`    |            | The Dynatrace [API Token](https://docs.dynatrace.com/docs/dynatrace-api/basics/dynatrace-api-authentication#create-token), see the required scopes below | yes      |         |
 
-The extension supports all environment variables provided
-by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
+The extension supports all environment variables provided by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
+
+When installed as linux package this configuration is done in the file `/etc/steadybit/extension-dynatrace`.
 
 ## Dynatrace Permissions
 
