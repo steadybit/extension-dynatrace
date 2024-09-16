@@ -12,6 +12,7 @@ our [Reliability Hub](https://hub.steadybit.com/extension/com.steadybit.extensio
 | Environment Variable               | Helm value | Meaning                                                                                                                                                  | Required | Default |
 |------------------------------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|
 | `STEADYBIT_EXTENSION_API_BASE_URL` |            | The Dynatrace API Base Url, like `https://{your-environment-id}.live.dynatrace.com/api`                                                                  | yes      |         |
+| `STEADYBIT_EXTENSION_UI_BASE_URL`  |            | The Dynatrace UI Base Url, like `https://{your-environment-id}.apps.dynatrace.com/ui`                                                                    | yes      |         |
 | `STEADYBIT_EXTENSION_API_TOKEN`    |            | The Dynatrace [API Token](https://docs.dynatrace.com/docs/dynatrace-api/basics/dynatrace-api-authentication#create-token), see the required scopes below | yes      |         |
 
 The extension supports all environment variables provided by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
@@ -28,51 +29,63 @@ The extension requires the following scopes:
 
 ## Installation
 
-We recommend that you install the extension with
-our [official Helm chart](https://github.com/steadybit/extension-dynatrace/tree/main/charts/steadybit-extension-dynatrace).
+### Kubernetes
 
-### Helm
+Detailed information about agent and extension installation in kubernetes can also be found in
+our [documentation](https://docs.steadybit.com/install-and-configure/install-agent/install-on-kubernetes).
+
+#### Recommended (via agent helm chart)
+
+All extensions provide a helm chart that is also integrated in the
+[helm-chart](https://github.com/steadybit/helm-charts/tree/main/charts/steadybit-agent) of the agent.
+
+You must provide additional values to activate this extension.
+
+```
+--set extension-dynatrace.enabled=true \
+--set extension-dynatrace.dynatrace.apiBaseUrl={{YOUR_API_BASE_URL}} \
+--set extension-dynatrace.dynatrace.uiBaseUrl={{YOUR_UI_BASE_URL}} \
+--set extension-dynatrace.dynatrace.apiToken={{YOUR_API_TOKEN}} \
+```
+
+Additional configuration options can be found in
+the [helm-chart](https://github.com/steadybit/extension-dynatrace/blob/main/charts/steadybit-extension-dynatrace/values.yaml) of the
+extension.
+
+#### Alternative (via own helm chart)
+
+If you need more control, you can install the extension via its
+dedicated [helm-chart](https://github.com/steadybit/extension-dynatrace/blob/main/charts/steadybit-extension-dynatrace).
 
 ```bash
 helm repo add steadybit-extension-dynatrace https://steadybit.github.io/extension-dynatrace
 helm repo update
-```
-
-```bash
 helm upgrade steadybit-extension-dynatrace \
   --install \
   --wait \
   --timeout 5m0s \
   --create-namespace \
   --namespace steadybit-agent \
+  --set dynatrace.apiBaseUrl={{YOUR_API_BASE_URL}} \
+  --set dynatrace.uiBaseUrl={{YOUR_UI_BASE_URL}} \
+  --set dynatrace.apiToken={{YOUR_API_TOKEN}} \
   steadybit-extension-dynatrace/steadybit-extension-dynatrace`
 ```
-
-### Docker
-
-You may alternatively start the Docker container manually.
-
-```bash
-docker run \
-  --env STEADYBIT_LOG_LEVEL=info \
-  --expose 8090 \
-  ghcr.io/steadybit/extension-dynatrace:latest
-```
-
-## Register the extension
-
-Make sure to register the extension at the steadybit platform. Please refer to
-the [documentation](https://docs.steadybit.com/integrate-with-steadybit/extensions/extension-installation) for more
-information.
 
 ### Linux Package
 
 Please use
 our [agent-linux.sh script](https://docs.steadybit.com/install-and-configure/install-agent/install-on-linux-hosts)
-to install the extension on your Linux machine.
-The script will download the latest version of the extension and install it using the package manager.
+to install the extension on your Linux machine. The script will download the latest version of the extension and install
+it using the package manager.
 
-After installing configure the extension by editing `/etc/steadybit/extension-dynatrace` and then restart the service.
+After installing, configure the extension by editing `/etc/steadybit/extension-dynatrace` and then restart the service.
+
+## Extension registration
+
+Make sure that the extension is registered with the agent. In most cases this is done automatically. Please refer to
+the [documentation](https://docs.steadybit.com/install-and-configure/install-agent/extension-discovery) for more
+information about extension registration and how to verify.
 
 ## Proxy
 
