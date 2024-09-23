@@ -13,7 +13,7 @@ require (
 	github.com/steadybit/action-kit/go/action_kit_sdk v1.1.10
 	github.com/steadybit/action-kit/go/action_kit_test v1.2.15
 	github.com/steadybit/discovery-kit/go/discovery_kit_api v1.6.0
-	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.1.0
+	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.1.1
 	github.com/steadybit/event-kit/go/event_kit_api v1.4.1
 	github.com/steadybit/extension-kit v1.8.15
 	github.com/stretchr/testify v1.9.0
@@ -31,7 +31,7 @@ require (
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
-	github.com/go-resty/resty/v2 v2.14.0 // indirect
+	github.com/go-resty/resty/v2 v2.15.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/gnostic-models v0.6.8 // indirect
