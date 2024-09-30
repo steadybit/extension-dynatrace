@@ -49,7 +49,7 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 		Description: "Checks for the existence of open problems in Dynatrace.",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		Icon:        extutil.Ptr(problemCheckActionIcon),
-		Category:    extutil.Ptr("monitoring"),
+		Technology:  extutil.Ptr("Dynatrace"),
 		Kind:        action_kit_api.Check,
 		TimeControl: action_kit_api.TimeControlInternal,
 		Parameters: []action_kit_api.ActionParameter{

@@ -53,7 +53,7 @@ func (m *CreateMaintenanceWindowAction) Describe() action_kit_api.ActionDescript
 		Description: "Create a Maintenance Window for a given duration.",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		Icon:        extutil.Ptr(maintenanceActionIcon),
-		Category:    extutil.Ptr("monitoring"),
+		Technology:  extutil.Ptr("Dynatrace"),
 		Kind:        action_kit_api.Other,
 		TimeControl: action_kit_api.TimeControlExternal,
 		Parameters: []action_kit_api.ActionParameter{
