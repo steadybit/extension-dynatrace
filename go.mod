@@ -15,7 +15,7 @@ require (
 	github.com/steadybit/discovery-kit/go/discovery_kit_api v1.6.0
 	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.1.1
 	github.com/steadybit/event-kit/go/event_kit_api v1.4.1
-	github.com/steadybit/extension-kit v1.8.15
+	github.com/steadybit/extension-kit v1.8.18
 	github.com/stretchr/testify v1.9.0
 
 )
@@ -23,7 +23,7 @@ require (
 require (
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/elastic/go-sysinfo v1.14.1 // indirect
+	github.com/elastic/go-sysinfo v1.14.2 // indirect
 	github.com/elastic/go-windows v1.0.2 // indirect
 	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
 	github.com/getkin/kin-openapi v0.127.0 // indirect
