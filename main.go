@@ -39,7 +39,7 @@ func main() {
 	action_kit_sdk.RegisterAction(extmaintenance.NewMaintenanceAction())
 	action_kit_sdk.RegisterAction(extproblems.NewProblemCheckAction())
 	action_kit_sdk.RegisterCoverageEndpoints()
-	action_kit_sdk.InstallSignalHandler()
+	extsignals.ActivateSignalHandlers()
 
 	exthealth.SetReady(true)
 	exthttp.Listen(exthttp.ListenOpts{
