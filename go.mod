@@ -1,6 +1,9 @@
 module github.com/steadybit/extension-dynatrace
 
-go 1.23
+go 1.23.0
+
+toolchain go1.23.4
+
 require (
 	github.com/google/uuid v1.6.0
 	github.com/jellydator/ttlcache/v3 v3.3.0
