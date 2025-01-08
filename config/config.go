@@ -102,7 +102,7 @@ func (s *Specification) CreateMaintenanceWindow(_ context.Context, maintenanceWi
 
 	if response.StatusCode != 200 {
 		log.Error().Int("code", response.StatusCode).Err(err).Msgf("Unexpected response %+v", string(responseBody))
-		return nil, response, errors.New("unexpected response code")
+		return nil, response, errors.New(fmt.Sprintf("unexpected response code %d: %+v", response.StatusCode, string(responseBody)))
 	}
 
 	var result []types.CreateMaintenanceWindowResponse
@@ -140,7 +140,7 @@ func (s *Specification) GetProblems(_ context.Context, from time.Time, entitySel
 
 	if response.StatusCode != 200 {
 		log.Error().Int("code", response.StatusCode).Err(err).Msgf("Unexpected response %+v", string(responseBody))
-		return nil, response, errors.New("unexpected response code")
+		return nil, response, errors.New(fmt.Sprintf("unexpected response code %d: %+v", response.StatusCode, string(responseBody)))
 	}
 
 	var result types.GetProblemsResponse

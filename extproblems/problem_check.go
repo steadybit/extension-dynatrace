@@ -190,9 +190,9 @@ type ProblemsApi interface {
 
 func ProblemCheckStatus(ctx context.Context, state *ProblemCheckState, api ProblemsApi) (*action_kit_api.StatusResult, error) {
 	now := time.Now()
-	problems, resp, err := api.GetProblems(ctx, state.Start, state.EntitySelector)
+	problems, _, err := api.GetProblems(ctx, state.Start, state.EntitySelector)
 	if err != nil {
-		return nil, extension_kit.ToError(fmt.Sprintf("Failed to get problems from Dynatrace. Full response: %v", resp), err)
+		return nil, extension_kit.ToError("Failed to get problems from Dynatrace.", err)
 	}
 
 	completed := now.After(state.End)
