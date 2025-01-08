@@ -151,8 +151,8 @@ func (m *ProblemCheckAction) Prepare(_ context.Context, state *ProblemCheckState
 	state.Start = time.Now()
 	state.End = time.Now().Add(time.Millisecond * time.Duration(duration))
 
-	if request.Config["entitySelector"] != nil {
-		state.EntitySelector = extutil.Ptr(fmt.Sprintf("%v", request.Config["entitySelector"]))
+	if extutil.ToString(request.Config["entitySelector"]) != "" {
+		state.EntitySelector = extutil.Ptr(extutil.ToString(request.Config["entitySelector"]))
 	}
 
 	if request.Config["condition"] != nil {
