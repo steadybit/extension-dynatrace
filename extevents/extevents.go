@@ -103,6 +103,7 @@ func onExperimentStarted(event *event_kit_api.EventRequestBody) (*types.EventIng
 }
 
 func onExperimentCompleted(event *event_kit_api.EventRequestBody) (*types.EventIngest, error) {
+	log.Warn().Msg("Experiment completed event received.")
 	stepExecutions.Range(func(key, value interface{}) bool {
 		stepExecution := value.(event_kit_api.ExperimentStepExecution)
 		if stepExecution.ExecutionId == event.ExperimentExecution.ExecutionId {
