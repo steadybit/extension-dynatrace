@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	ttlcache "github.com/jellydator/ttlcache/v3"
+	"github.com/jellydator/ttlcache/v3"
 	"github.com/rs/zerolog/log"
 	"github.com/steadybit/event-kit/go/event_kit_api"
 	"github.com/steadybit/extension-dynatrace/config"
@@ -143,27 +143,28 @@ func onExperimentTargetStarted(event *event_kit_api.EventRequestBody) (*types.Ev
 		return nil, nil
 	}
 	stepExecution := v.(event_kit_api.ExperimentStepExecution)
-	if stepExecution.ActionKind == nil || *stepExecution.ActionKind != event_kit_api.Attack {
-		return nil, nil
+
+	if stepExecution.ActionKind != nil && *stepExecution.ActionKind == event_kit_api.Attack {
+		props := make(map[string]string)
+		addBaseProperties(props, event)
+		addStepExecutionProperties(props, &stepExecution)
+		addTargetExecutionProperties(props, event.ExperimentStepTargetExecution)
+
+		return &types.EventIngest{
+			EventType: "CUSTOM_INFO",
+			Title: fmt.Sprintf("Steadybit experiment '%s / %g' - Attack '%s' started - Target '%s'",
+				event.ExperimentStepTargetExecution.ExperimentKey,
+				event.ExperimentStepTargetExecution.ExecutionId,
+				getActionName(stepExecution),
+				getTargetName(*event.ExperimentStepTargetExecution)),
+			Properties:     props,
+			EntitySelector: getEntitySelector(*event.ExperimentStepTargetExecution),
+			StartTime:      extutil.Ptr(event.ExperimentStepTargetExecution.StartedTime.UnixMilli()),
+			EndTime:        extutil.Ptr(event.ExperimentStepTargetExecution.StartedTime.UnixMilli()),
+		}, nil
 	}
 
-	props := make(map[string]string)
-	addBaseProperties(props, event)
-	addStepExecutionProperties(props, &stepExecution)
-	addTargetExecutionProperties(props, event.ExperimentStepTargetExecution)
-
-	return &types.EventIngest{
-		EventType: "CUSTOM_INFO",
-		Title: fmt.Sprintf("Steadybit experiment '%s / %g' - Attack '%s' started - Target '%s'",
-			event.ExperimentStepTargetExecution.ExperimentKey,
-			event.ExperimentStepTargetExecution.ExecutionId,
-			getActionName(stepExecution),
-			getTargetName(*event.ExperimentStepTargetExecution)),
-		Properties:     props,
-		EntitySelector: getEntitySelector(*event.ExperimentStepTargetExecution),
-		StartTime:      extutil.Ptr(event.ExperimentStepTargetExecution.StartedTime.UnixMilli()),
-		EndTime:        extutil.Ptr(event.ExperimentStepTargetExecution.StartedTime.UnixMilli()),
-	}, nil
+	return nil, nil
 }
 
 func onExperimentTargetCompleted(event *event_kit_api.EventRequestBody) (*types.EventIngest, error) {
@@ -177,27 +178,27 @@ func onExperimentTargetCompleted(event *event_kit_api.EventRequestBody) (*types.
 		return nil, nil
 	}
 	stepExecution := v.(event_kit_api.ExperimentStepExecution)
-	if stepExecution.ActionKind == nil || *stepExecution.ActionKind != event_kit_api.Attack {
-		return nil, nil
+
+	if stepExecution.ActionKind != nil && *stepExecution.ActionKind == event_kit_api.Attack {
+		props := make(map[string]string)
+		addBaseProperties(props, event)
+		addStepExecutionProperties(props, &stepExecution)
+		addTargetExecutionProperties(props, event.ExperimentStepTargetExecution)
+
+		return &types.EventIngest{
+			EventType: "CUSTOM_INFO",
+			Title: fmt.Sprintf("Steadybit experiment '%s / %g' - Attack '%s' ended - Target '%s'",
+				event.ExperimentStepTargetExecution.ExperimentKey,
+				event.ExperimentStepTargetExecution.ExecutionId,
+				getActionName(stepExecution),
+				getTargetName(*event.ExperimentStepTargetExecution)),
+			Properties:     props,
+			EntitySelector: getEntitySelector(*event.ExperimentStepTargetExecution),
+			StartTime:      extutil.Ptr(event.ExperimentStepTargetExecution.EndedTime.UnixMilli()),
+			EndTime:        extutil.Ptr(event.ExperimentStepTargetExecution.EndedTime.UnixMilli()),
+		}, nil
 	}
-
-	props := make(map[string]string)
-	addBaseProperties(props, event)
-	addStepExecutionProperties(props, &stepExecution)
-	addTargetExecutionProperties(props, event.ExperimentStepTargetExecution)
-
-	return &types.EventIngest{
-		EventType: "CUSTOM_INFO",
-		Title: fmt.Sprintf("Steadybit experiment '%s / %g' - Attack '%s' ended - Target '%s'",
-			event.ExperimentStepTargetExecution.ExperimentKey,
-			event.ExperimentStepTargetExecution.ExecutionId,
-			getActionName(stepExecution),
-			getTargetName(*event.ExperimentStepTargetExecution)),
-		Properties:     props,
-		EntitySelector: getEntitySelector(*event.ExperimentStepTargetExecution),
-		StartTime:      extutil.Ptr(event.ExperimentStepTargetExecution.EndedTime.UnixMilli()),
-		EndTime:        extutil.Ptr(event.ExperimentStepTargetExecution.EndedTime.UnixMilli()),
-	}, nil
+	return nil, nil
 }
 
 func getActionName(target event_kit_api.ExperimentStepExecution) string {
