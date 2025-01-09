@@ -104,7 +104,7 @@ func onExperimentStarted(event *event_kit_api.EventRequestBody) (*types.EventIng
 }
 
 func onExperimentCompleted(event *event_kit_api.EventRequestBody) (*types.EventIngest, error) {
-	log.Info().Msgf("Steadybit experiment '%s / %g' ended event received.", event.ExperimentExecution.ExperimentKey, event.ExperimentExecution.ExecutionId)
+	log.Info().Str("experimentKey", event.ExperimentExecution.ExperimentKey).Float32("executionId", event.ExperimentExecution.ExecutionId).Str("status", string(event.ExperimentExecution.State)).Msg("Received event about ended experiment.")
 	stepExecutions.Range(func(key, value interface{}) bool {
 		stepExecution := value.(event_kit_api.ExperimentStepExecution)
 		if stepExecution.ExecutionId == event.ExperimentExecution.ExecutionId {
