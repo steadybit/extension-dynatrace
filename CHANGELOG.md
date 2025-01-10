@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.0.8 (next release)
+## v1.0.8
 
 - Handle event requests asynchronously, to avoid blocking the agent
 - Don't use entitySelector for events if the entity could not be found in Dynatrace
