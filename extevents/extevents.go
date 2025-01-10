@@ -77,14 +77,13 @@ func handle(handler eventHandler) func(w http.ResponseWriter, r *http.Request, b
 			return
 		}
 
-		if request, err := handler(&event); err == nil {
-			if request != nil {
-				sendDynatraceEvent(r.Context(), &config.Config, request)
+		go func() {
+			if request, err := handler(&event); err == nil {
+				if request != nil {
+					sendDynatraceEvent(&config.Config, request)
+				}
 			}
-		} else {
-			exthttp.WriteError(w, extension_kit.ToError(err.Error(), err))
-			return
-		}
+		}()
 
 		exthttp.WriteBody(w, "{}")
 	}
@@ -345,15 +344,17 @@ func parseBodyToEventRequestBody(body []byte) (event_kit_api.EventRequestBody, e
 	return event, err
 }
 
-func sendDynatraceEvent(ctx context.Context, api PostEventApi, event *types.EventIngest) {
-	result, response, err := api.PostEvent(ctx, *event)
+func sendDynatraceEvent(api PostEventApi, event *types.EventIngest) {
+	result, response, err := api.PostEvent(context.Background(), *event)
 
 	if err != nil {
 		log.Err(err).Msgf("Failed to send Dynatrace event. Full response %v", response)
 	} else if response.StatusCode != 201 {
 		log.Error().Msgf("Dynatrace API responded with unexpected status code %d while sending Event. Full response: %v",
 			response.StatusCode, response)
-	} else {
+	} else if result != nil && result.ReportCount > 0 {
 		log.Debug().Msgf("Successfully sent Dynatrace event. Response: %v", result)
+	} else {
+		log.Warn().Msgf("No Dynatrace event was created. Response: %v", result)
 	}
 }
