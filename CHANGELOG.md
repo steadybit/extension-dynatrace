@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.9 (next)
+
+- Updated dependencies
+
 ## v1.0.8
 
 - Handle event requests asynchronously, to avoid blocking the agent
