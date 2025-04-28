@@ -28,13 +28,13 @@ func RegisterEventListenerHandlers() {
 			log.Debug().Str("entitySelector", key).Msg("Loading entity from Dynatrace API")
 			entities, response, err := config.Config.GetEntities(context.Background(), key)
 			if err != nil {
-				log.Err(err).Msgf("Failed to find entities. Full response %v", response)
+				log.Err(err).Str("entitySelector", key).Msgf("Failed to find entities. Full response %v", response)
 			} else if response.StatusCode != 200 {
-				log.Error().Msgf("Dynatrace API responded with unexpected status code %d while getting entities.", response.StatusCode)
+				log.Error().Str("entitySelector", key).Msgf("Dynatrace API responded with unexpected status code %d while getting entities.", response.StatusCode)
 			} else if len(entities.Entities) > 1 {
-				log.Warn().Msgf("Found multiple matching entities for key '%s': %+v", key, entities.Entities)
+				log.Warn().Str("entitySelector", key).Msgf("Found multiple matching entities %+v", entities.Entities)
 			} else if len(entities.Entities) == 1 {
-				log.Debug().Msgf("Successfully loaded entity %s", entities.Entities[0].EntityId)
+				log.Debug().Str("entitySelector", key).Msgf("Successfully loaded entity %s", entities.Entities[0].EntityId)
 				item := c.Set(key, entities.Entities[0].EntityId, ttlcache.DefaultTTL)
 				return item
 			}
