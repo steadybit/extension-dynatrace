@@ -224,26 +224,26 @@ func getEntitySelector(target event_kit_api.ExperimentStepTargetExecution) *stri
 	var entitySelector *string
 
 	if target.TargetType == "com.steadybit.extension_kubernetes.kubernetes-cluster" && hasSingleAttribute(target, "k8s.cluster-name") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(\"KUBERNETES_CLUSTER\"),entityName.equals(\"%s\")", target.TargetAttributes["k8s.cluster-name"][0]))
+		entitySelector = extutil.Ptr(fmt.Sprintf("type(KUBERNETES_CLUSTER),entityName.equals(%s)", target.TargetAttributes["k8s.cluster-name"][0]))
 	} else if target.TargetType == "com.steadybit.extension_kubernetes.kubernetes-deployment" && hasSingleAttribute(target, "k8s.deployment") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(\"CLOUD_APPLICATION\"),entityName.equals(\"%s\")", target.TargetAttributes["k8s.deployment"][0]))
+		entitySelector = extutil.Ptr(fmt.Sprintf("type(CLOUD_APPLICATION),entityName.equals(%s)", target.TargetAttributes["k8s.deployment"][0]))
 	} else if target.TargetType == "com.steadybit.extension_kubernetes.kubernetes-statefulset" && hasSingleAttribute(target, "k8s.statefulset") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(\"CLOUD_APPLICATION\"),entityName.equals(\"%s\")", target.TargetAttributes["k8s.statefulset"][0]))
+		entitySelector = extutil.Ptr(fmt.Sprintf("type(CLOUD_APPLICATION),entityName.equals(%s)", target.TargetAttributes["k8s.statefulset"][0]))
 	} else if target.TargetType == "com.steadybit.extension_kubernetes.kubernetes-daemonset" && hasSingleAttribute(target, "k8s.daemonset") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(\"CLOUD_APPLICATION\"),entityName.equals(\"%s\")", target.TargetAttributes["k8s.daemonset"][0]))
+		entitySelector = extutil.Ptr(fmt.Sprintf("type(CLOUD_APPLICATION),entityName.equals(%s)", target.TargetAttributes["k8s.daemonset"][0]))
 	} else if target.TargetType == "com.steadybit.extension_kubernetes.kubernetes-node" && hasSingleAttribute(target, "k8s.node.name") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(\"KUBERNETES_NODE\"),entityName.equals(\"%s\")", target.TargetAttributes["k8s.node.name"][0]))
+		entitySelector = extutil.Ptr(fmt.Sprintf("type(KUBERNETES_NODE),entityName.equals(%s)", target.TargetAttributes["k8s.node.name"][0]))
 	} else if target.TargetType == "com.steadybit.extension_kubernetes.kubernetes-pod" && hasSingleAttribute(target, "k8s.pod.name") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(\"CLOUD_APPLICATION_INSTANCE\"),entityName.equals(\"%s\")", target.TargetAttributes["k8s.pod.name"][0]))
+		entitySelector = extutil.Ptr(fmt.Sprintf("type(CLOUD_APPLICATION_INSTANCE),entityName.equals(%s)", target.TargetAttributes["k8s.pod.name"][0]))
 	} else if target.TargetType == "com.steadybit.extension_jvm.application" && hasSingleAttribute(target, "k8s.pod.name") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(\"CLOUD_APPLICATION_INSTANCE\"),entityName.equals(\"%s\")", target.TargetAttributes["k8s.pod.name"][0]))
+		entitySelector = extutil.Ptr(fmt.Sprintf("type(CLOUD_APPLICATION_INSTANCE),entityName.equals(%s)", target.TargetAttributes["k8s.pod.name"][0]))
 	} else if target.TargetType == "com.steadybit.extension_container.container" && hasSingleAttribute(target, "k8s.container.name") && hasSingleAttribute(target, "k8s.pod.name") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(\"CONTAINER_GROUP_INSTANCE\"),entityName.equals(\"%s %s\")", target.TargetAttributes["k8s.pod.name"][0], target.TargetAttributes["k8s.container.name"][0]))
+		entitySelector = extutil.Ptr(fmt.Sprintf("type(CONTAINER_GROUP_INSTANCE),entityName.equals(%s %s)", target.TargetAttributes["k8s.pod.name"][0], target.TargetAttributes["k8s.container.name"][0]))
 	} else if target.TargetType == "com.steadybit.extension_host.host" && hasSingleAttribute(target, "host.hostname") {
 		if hasSingleAttribute(target, "k8s.cluster-name") {
-			entitySelector = extutil.Ptr(fmt.Sprintf("type(\"KUBERNETES_NODE\"),entityName.equals(\"%s\")", target.TargetAttributes["host.hostname"][0]))
+			entitySelector = extutil.Ptr(fmt.Sprintf("type(KUBERNETES_NODE),entityName.equals(%s)", target.TargetAttributes["host.hostname"][0]))
 		} else if hasSingleAttribute(target, "host.hostname") {
-			entitySelector = extutil.Ptr(fmt.Sprintf("type(\"HOST\"),entityName.equals(\"%s\")", target.TargetAttributes["host.hostname"][0]))
+			entitySelector = extutil.Ptr(fmt.Sprintf("type(HOST),entityName.equals(%s)", target.TargetAttributes["host.hostname"][0]))
 		}
 	}
 
@@ -341,7 +341,7 @@ func addIfPresent(props map[string]string, target event_kit_api.ExperimentStepTa
 	if values, ok := target.TargetAttributes[steadybitAttribute]; ok {
 		//We don't want to add one-to-many attributes to dynatrace. For example when attacking a host, we don't want to add all namespaces or pods which are running on that host.
 		if (len(values)) == 1 {
-			entity := entityCache.Get(fmt.Sprintf("type(\"%s\"),entityName.equals(\"%s\")", entityType, values[0]))
+			entity := entityCache.Get(fmt.Sprintf("type(%s),entityName.equals(%s)", entityType, values[0]))
 			if entity != nil && len(entity.Value()) > 0 {
 				props[dynatraceProperty] = entity.Value()
 			}
