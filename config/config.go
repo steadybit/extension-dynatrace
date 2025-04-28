@@ -15,6 +15,7 @@ import (
 	"github.com/steadybit/extension-dynatrace/types"
 	"io"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -69,7 +70,7 @@ func (s *Specification) PostEvent(_ context.Context, event types.EventIngest) (*
 }
 
 func (s *Specification) GetEntities(_ context.Context, entitySelector string) (*types.EntitiesList, *http.Response, error) {
-	responseBody, response, err := s.do(fmt.Sprintf("%s/v2/entities?entitySelector=%s", s.ApiBaseUrl, entitySelector), "GET", nil)
+	responseBody, response, err := s.do(fmt.Sprintf("%s/v2/entities?entitySelector=%s", s.ApiBaseUrl, url.QueryEscape(entitySelector)), "GET", nil)
 	if err != nil {
 		return nil, response, err
 	}
