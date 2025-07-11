@@ -58,7 +58,7 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 				Name:         "duration",
 				Label:        "Duration",
 				Description:  extutil.Ptr(""),
-				Type:         action_kit_api.Duration,
+				Type:         action_kit_api.ActionParameterTypeDuration,
 				DefaultValue: extutil.Ptr("30s"),
 				Order:        extutil.Ptr(1),
 				Required:     extutil.Ptr(true),
@@ -67,7 +67,7 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 				Name:        "entitySelector",
 				Label:       "Entity Selector",
 				Description: extutil.Ptr("Filter Problems by an Dynatrace entity selector. If empty, all problems are considered."),
-				Type:        action_kit_api.String,
+				Type:        action_kit_api.ActionParameterTypeString,
 				Order:       extutil.Ptr(2),
 				Required:    extutil.Ptr(false),
 			},
@@ -75,7 +75,7 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 				Name:        "condition",
 				Label:       "Condition",
 				Description: extutil.Ptr(""),
-				Type:        action_kit_api.String,
+				Type:        action_kit_api.ActionParameterTypeString,
 				Options: extutil.Ptr([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
 						Label: "No check, only show problems",
@@ -98,7 +98,7 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 				Name:         "conditionCheckMode",
 				Label:        "Condition Check Mode",
 				Description:  extutil.Ptr("Should the step succeed if the condition is met at least once or all the time?"),
-				Type:         action_kit_api.String,
+				Type:         action_kit_api.ActionParameterTypeString,
 				DefaultValue: extutil.Ptr(conditionCheckModeAllTheTime),
 				Options: extutil.Ptr([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{

@@ -62,7 +62,7 @@ func (m *CreateMaintenanceWindowAction) Describe() action_kit_api.ActionDescript
 				Name:         "duration",
 				Label:        "Duration",
 				Description:  extutil.Ptr("How long should the maintenance window last?"),
-				Type:         action_kit_api.Duration,
+				Type:         action_kit_api.ActionParameterTypeDuration,
 				DefaultValue: extutil.Ptr("30s"),
 				Order:        extutil.Ptr(0),
 				Required:     extutil.Ptr(true),
@@ -70,7 +70,7 @@ func (m *CreateMaintenanceWindowAction) Describe() action_kit_api.ActionDescript
 			{
 				Name:         "suppressionType",
 				Label:        "Problem detection and alerting",
-				Type:         action_kit_api.String,
+				Type:         action_kit_api.ActionParameterTypeString,
 				DefaultValue: extutil.Ptr(DetectProblemsAndAlert),
 				Options: extutil.Ptr([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
