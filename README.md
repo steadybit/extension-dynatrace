@@ -14,7 +14,7 @@ our [Reliability Hub](https://hub.steadybit.com/extension/com.steadybit.extensio
 | `STEADYBIT_EXTENSION_API_BASE_URL`         |            | The Dynatrace API Base Url, like `https://{your-environment-id}.live.dynatrace.com/api`                                                                  | yes      |         |
 | `STEADYBIT_EXTENSION_UI_BASE_URL`          |            | The Dynatrace UI Base Url, like `https://{your-environment-id}.apps.dynatrace.com/ui`                                                                    | yes      |         |
 | `STEADYBIT_EXTENSION_API_TOKEN`            |            | The Dynatrace [API Token](https://docs.dynatrace.com/docs/dynatrace-api/basics/dynatrace-api-authentication#create-token), see the required scopes below | yes      |         |
-| `STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY` |            | To not check certificate for on-prem dynatrace installations                                                                                             | yes      | false   |
+| `STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY` |            | To not check certificate for on-prem dynatrace installations                                                                                             | false    | false   |
 
 The extension supports all environment variables provided by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
 

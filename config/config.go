@@ -31,7 +31,7 @@ type Specification struct {
 	// The Dynatrace API Token
 	ApiToken string `json:"apiToken" split_words:"true" required:"true"`
 	// To not check certificate for on-prem dynatrace installations
-	InsecureSkipVerify bool `json:"insecureSkipVerify" split_words:"true" required:"true"`
+	InsecureSkipVerify bool `json:"insecureSkipVerify" split_words:"true" default:"false"`
 }
 
 var (

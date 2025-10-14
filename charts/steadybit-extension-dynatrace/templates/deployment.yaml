@@ -59,10 +59,12 @@ spec:
                   key: api-token
             - name: STEADYBIT_EXTENSION_API_BASE_URL
               value: {{ .Values.dynatrace.apiBaseUrl }}
-            - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
-              value: {{ .Values.dynatrace.insecureSkipVerify }}
             - name: STEADYBIT_EXTENSION_UI_BASE_URL
               value: {{ .Values.dynatrace.uiBaseUrl }}
+            {{ if .Values.dynatrace.insecureSkipVerify }}
+            - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
+              value: "true"
+            {{- end }}
             {{- with .Values.extraEnv }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
