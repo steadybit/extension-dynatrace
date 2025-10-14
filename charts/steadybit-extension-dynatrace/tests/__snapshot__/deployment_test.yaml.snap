@@ -41,8 +41,6 @@ manifest should match snapshot using podAnnotations and Labels:
                   value: null
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
-                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
-                  value: "true"
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -131,8 +129,6 @@ manifest should match snapshot with TLS:
                   value: null
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
-                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
-                  value: "true"
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -224,8 +220,6 @@ manifest should match snapshot with extra env vars:
                   value: null
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
-                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
-                  value: "true"
                 - name: FOO
                   value: bar
               envFrom:
@@ -319,8 +313,6 @@ manifest should match snapshot with extra labels:
                   value: null
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
-                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
-                  value: "true"
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -411,8 +403,6 @@ manifest should match snapshot with mutual TLS:
                   value: null
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
-                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
-                  value: "true"
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -517,8 +507,6 @@ manifest should match snapshot with mutual TLS using containerPaths:
                   value: null
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
-                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
-                  value: "true"
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -603,8 +591,6 @@ manifest should match snapshot with podSecurityContext:
                   value: null
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
-                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
-                  value: "true"
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -690,8 +676,6 @@ manifest should match snapshot with priority class:
                   value: null
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
-                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
-                  value: "true"
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -777,8 +761,6 @@ manifest should match snapshot without TLS:
                   value: null
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
-                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
-                  value: "true"
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
