@@ -39,6 +39,8 @@ manifest should match snapshot using podAnnotations and Labels:
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
                   value: null
+                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
+                  value: false
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
@@ -127,6 +129,8 @@ manifest should match snapshot with TLS:
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
                   value: null
+                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
+                  value: false
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
@@ -218,6 +222,8 @@ manifest should match snapshot with extra env vars:
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
                   value: null
+                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
+                  value: false
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
                 - name: FOO
@@ -311,6 +317,8 @@ manifest should match snapshot with extra labels:
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
                   value: null
+                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
+                  value: false
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
@@ -401,6 +409,8 @@ manifest should match snapshot with mutual TLS:
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
                   value: null
+                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
+                  value: false
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
@@ -505,6 +515,8 @@ manifest should match snapshot with mutual TLS using containerPaths:
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
                   value: null
+                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
+                  value: false
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
@@ -589,6 +601,8 @@ manifest should match snapshot with podSecurityContext:
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
                   value: null
+                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
+                  value: false
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
@@ -674,6 +688,8 @@ manifest should match snapshot with priority class:
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
                   value: null
+                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
+                  value: false
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0
@@ -759,6 +775,8 @@ manifest should match snapshot without TLS:
                       name: steadybit-extension-dynatrace
                 - name: STEADYBIT_EXTENSION_API_BASE_URL
                   value: null
+                - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
+                  value: false
                 - name: STEADYBIT_EXTENSION_UI_BASE_URL
                   value: null
               image: ghcr.io/steadybit/extension-dynatrace:v0.0.0

@@ -9,11 +9,12 @@ our [Reliability Hub](https://hub.steadybit.com/extension/com.steadybit.extensio
 
 ## Configuration
 
-| Environment Variable               | Helm value | Meaning                                                                                                                                                  | Required | Default |
-|------------------------------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|
-| `STEADYBIT_EXTENSION_API_BASE_URL` |            | The Dynatrace API Base Url, like `https://{your-environment-id}.live.dynatrace.com/api`                                                                  | yes      |         |
-| `STEADYBIT_EXTENSION_UI_BASE_URL`  |            | The Dynatrace UI Base Url, like `https://{your-environment-id}.apps.dynatrace.com/ui`                                                                    | yes      |         |
-| `STEADYBIT_EXTENSION_API_TOKEN`    |            | The Dynatrace [API Token](https://docs.dynatrace.com/docs/dynatrace-api/basics/dynatrace-api-authentication#create-token), see the required scopes below | yes      |         |
+| Environment Variable                       | Helm value | Meaning                                                                                                                                                  | Required | Default |
+|--------------------------------------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|
+| `STEADYBIT_EXTENSION_API_BASE_URL`         |            | The Dynatrace API Base Url, like `https://{your-environment-id}.live.dynatrace.com/api`                                                                  | yes      |         |
+| `STEADYBIT_EXTENSION_UI_BASE_URL`          |            | The Dynatrace UI Base Url, like `https://{your-environment-id}.apps.dynatrace.com/ui`                                                                    | yes      |         |
+| `STEADYBIT_EXTENSION_API_TOKEN`            |            | The Dynatrace [API Token](https://docs.dynatrace.com/docs/dynatrace-api/basics/dynatrace-api-authentication#create-token), see the required scopes below | yes      |         |
+| `STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY` |            | To not check certificate for on-prem dynatrace installations                                                                                             | yes      | false   |
 
 The extension supports all environment variables provided by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
 
@@ -46,6 +47,7 @@ You must provide additional values to activate this extension.
 --set extension-dynatrace.dynatrace.apiBaseUrl={{YOUR_API_BASE_URL}} \
 --set extension-dynatrace.dynatrace.uiBaseUrl={{YOUR_UI_BASE_URL}} \
 --set extension-dynatrace.dynatrace.apiToken={{YOUR_API_TOKEN}} \
+--set extension-dynatrace.dynatrace.insecureSkipVerify=false \
 ```
 
 Additional configuration options can be found in

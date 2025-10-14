@@ -7,6 +7,7 @@ package config
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -29,6 +30,8 @@ type Specification struct {
 	UiBaseUrl string `json:"uiBaseUrl" split_words:"true" required:"true"`
 	// The Dynatrace API Token
 	ApiToken string `json:"apiToken" split_words:"true" required:"true"`
+	// To not check certificate for on-prem dynatrace installations
+	InsecureSkipVerify bool `json:"insecureSkipVerify" split_words:"true" required:"true"`
 }
 
 var (
@@ -157,6 +160,10 @@ func (s *Specification) GetProblems(_ context.Context, from time.Time, entitySel
 }
 
 func (s *Specification) do(url string, method string, body []byte) ([]byte, *http.Response, error) {
+	if s.InsecureSkipVerify {
+		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: s.InsecureSkipVerify}
+	}
+
 	log.Debug().Str("url", url).Str("method", method).Msg("Requesting Dynatrace API")
 	if body != nil {
 		log.Debug().Int("len", len(body)).Str("body", string(body)).Msg("Request body")

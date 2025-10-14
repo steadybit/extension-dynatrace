@@ -9,6 +9,8 @@ dynatrace:
   uiBaseUrl: ""
   # dynatrace.apiToken -- The API Token used to access the Dynatrace API.
   apiToken: ""
+  # dynatrace.insecureSkipVerify -- Disable TLS certificate validation for onprem enterprise installations.
+  insecureSkipVerify: false
   # dynatrace.existingSecret -- If defined, will skip secret creation and instead assume that the referenced secret contains the key `api-token`.
   existingSecret: null
 
