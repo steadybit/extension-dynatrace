@@ -31,8 +31,9 @@ func TestWithMinikube(t *testing.T) {
 			return []string{
 				"--set", "logging.level=debug",
 				"--set", "dynatrace.apiToken=api-token-123",
-				"--set", fmt.Sprintf("dynatrace.apiBaseUrl=http://host.minikube.internal:%s/api", port),
-				"--set", "dynatrace.uiBaseUrl=http://mock/ui",
+				"--set", "dynatrace.insecureSkipVerify=true",
+				"--set", fmt.Sprintf("dynatrace.apiBaseUrl=https://host.minikube.internal:%s/api", port),
+				"--set", "dynatrace.uiBaseUrl=https://mock/ui",
 			}
 		},
 	}
@@ -99,6 +100,6 @@ func testCheckProblem(t *testing.T, m *e2e.Minikube, e *e2e.Extension) {
 		problemId := "-703143834675302702_1701158040000V2"
 		assert.Equal(t, problemId, metric.Metric["dynatrace.problem.id"])
 		assert.Equal(t, "Container restarts", metric.Metric["dynatrace.problem.title"])
-		assert.Equal(t, fmt.Sprintf("http://mock/ui/apps/dynatrace.classic.problems/#problems/problemdetails;pid=%s", problemId), metric.Metric["url"])
+		assert.Equal(t, fmt.Sprintf("https://mock/ui/apps/dynatrace.classic.problems/#problems/problemdetails;pid=%s", problemId), metric.Metric["url"])
 	}
 }
