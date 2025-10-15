@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -17,6 +18,8 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -160,9 +163,36 @@ func (s *Specification) GetProblems(_ context.Context, from time.Time, entitySel
 }
 
 func (s *Specification) do(url string, method string, body []byte) ([]byte, *http.Response, error) {
-	if s.InsecureSkipVerify {
-		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: s.InsecureSkipVerify}
+	// Build a dedicated transport with optional extra CAs
+	rootPool, errPool := x509.SystemCertPool()
+	if rootPool == nil || errPool != nil {
+		rootPool = x509.NewCertPool()
 	}
+
+	// Append any PEM files from directories listed in SSL_CERT_DIR environment variable
+	sslCertDirEnv := os.Getenv("SSL_CERT_DIR")
+	if sslCertDirEnv != "" {
+		dirs := filepath.SplitList(sslCertDirEnv)
+		for _, dir := range dirs {
+			if fi, err := os.Stat(dir); err == nil && fi.IsDir() {
+				_ = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+					if err != nil || info.IsDir() {
+						return nil
+					}
+					ext := filepath.Ext(info.Name())
+					if ext == ".crt" || ext == ".pem" || ext == ".cer" {
+						if b, err := os.ReadFile(path); err == nil {
+							rootPool.AppendCertsFromPEM(b)
+						}
+					}
+					return nil
+				})
+			}
+		}
+	}
+
+	transport := &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: s.InsecureSkipVerify, RootCAs: rootPool}}
+	client := &http.Client{Transport: transport, Timeout: 30 * time.Second}
 
 	log.Debug().Str("url", url).Str("method", method).Msg("Requesting Dynatrace API")
 	if body != nil {
@@ -181,7 +211,6 @@ func (s *Specification) do(url string, method string, body []byte) ([]byte, *htt
 	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
 	request.Header.Set("Authorization", fmt.Sprintf("Api-Token %s", s.ApiToken))
 
-	client := &http.Client{}
 	response, err := client.Do(request)
 	if err != nil {
 		log.Error().Err(err).Msgf("Failed to execute request")

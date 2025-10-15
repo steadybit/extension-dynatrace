@@ -74,6 +74,43 @@ helm upgrade steadybit-extension-dynatrace \
   steadybit-extension-dynatrace/steadybit-extension-dynatrace`
 ```
 
+## Importing your own certificates
+
+You may want to import your own certificates for connecting to Gatling Enterprise with self-signed certificates. This can be done in two ways:
+
+### Option 1: Using InsecureSkipVerify
+
+The extension provides the `insecureSkipVerify` option which disables TLS certificate verification. This is suitable for testing but not recommended for production environments.
+
+```yaml
+dynatrace:
+  insecureSkipVerify: true
+```
+
+### Option 2: Mounting custom certificates
+
+Mount a volume with your custom certificates and reference it in `extraVolumeMounts` and `extraVolumes` in the helm chart.
+
+This example uses a config map to store the `*.crt`-files:
+
+```shell
+kubectl create configmap -n steadybit-agent dynatrace-self-signed-ca --from-file=./self-signed-ca.crt
+```
+
+```yaml
+extraVolumeMounts:
+  - name: extra-certs
+    mountPath: /etc/ssl/extra-certs
+    readOnly: true
+extraVolumes:
+  - name: extra-certs
+    configMap:
+      name: dynatrace-self-signed-ca
+extraEnv:
+  - name: SSL_CERT_DIR
+    value: /etc/ssl/extra-certs:/etc/ssl/certs
+```
+
 ### Linux Package
 
 Please use
