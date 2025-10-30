@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.10
+
+- Make path to problems view configurable
+
 ## v1.0.9
 
 - Updated dependencies
