@@ -1,8 +1,16 @@
 # Changelog
 
-## v1.0.10
+## v1.0.12
 
 - Make path to problems view configurable
+
+## v1.0.11
+
+- Support custom certificates
+
+## v1.0.10
+
+- Updated dependencies
 
 ## v1.0.9
 
