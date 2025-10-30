@@ -61,6 +61,8 @@ spec:
               value: {{ .Values.dynatrace.apiBaseUrl }}
             - name: STEADYBIT_EXTENSION_UI_BASE_URL
               value: {{ .Values.dynatrace.uiBaseUrl }}
+            - name: STEADYBIT_EXTENSION_UI_PROBLEMS_PATH
+              value: {{ .Values.dynatrace.uiProblemsPath }}
             {{ if .Values.dynatrace.insecureSkipVerify }}
             - name: STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY
               value: "true"

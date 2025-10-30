@@ -6,6 +6,9 @@ package extproblems
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/extension-dynatrace/config"
@@ -13,8 +16,6 @@ import (
 	extension_kit "github.com/steadybit/extension-kit"
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extutil"
-	"net/http"
-	"time"
 )
 
 type ProblemCheckAction struct{}
@@ -258,7 +259,7 @@ func toMetric(problem types.Problem, now time.Time) action_kit_api.Metric {
 			"dynatrace.problem.title": problem.Title,
 			"state":                   "danger",
 			"tooltip":                 tooltip,
-			"url":                     fmt.Sprintf("%s/apps/dynatrace.classic.problems/#problems/problemdetails;pid=%s", config.Config.UiBaseUrl, problem.ProblemId),
+			"url":                     fmt.Sprintf("%s%s;pid=%s", config.Config.UiBaseUrl, config.Config.UiProblemsPath, problem.ProblemId),
 		},
 		Timestamp: now,
 		Value:     0,

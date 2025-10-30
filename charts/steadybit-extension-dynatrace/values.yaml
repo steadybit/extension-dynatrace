@@ -7,6 +7,8 @@ dynatrace:
   apiBaseUrl: ""
   # dynatrace.uiBaseUrl -- The Dynatrace UI Base Url, like 'https://{your-environment-id}.apps.dynatrace.com/ui'
   uiBaseUrl: ""
+  # dynatrace.uiProblemsPath -- The Dynatrace UI Path to the problem details page. The extension will render the link to the problems like this '{uiBaseUrl}{uiProblemsPath};pid={problemId}'
+  uiProblemsPath: "/apps/dynatrace.classic.problems/#problems/problemdetails"
   # dynatrace.apiToken -- The API Token used to access the Dynatrace API.
   apiToken: ""
   # dynatrace.insecureSkipVerify -- Disable TLS certificate validation for onprem enterprise installations.

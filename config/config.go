@@ -12,15 +12,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/kelseyhightower/envconfig"
-	"github.com/rs/zerolog/log"
-	"github.com/steadybit/extension-dynatrace/types"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/kelseyhightower/envconfig"
+	"github.com/rs/zerolog/log"
+	"github.com/steadybit/extension-dynatrace/types"
 )
 
 // Specification is the configuration specification for the extension. Configuration values can be applied
@@ -31,6 +32,8 @@ type Specification struct {
 	ApiBaseUrl string `json:"apiBaseUrl" split_words:"true" required:"true"`
 	// The Dynatrace UI Base Url, like 'https://{your-environment-id}.apps.dynatrace.com/ui'
 	UiBaseUrl string `json:"uiBaseUrl" split_words:"true" required:"true"`
+	// The Dynatrace UI Path to the problem details page. The extension will render the link to the problems like this '{uiBaseUrl}{uiProblemsPath};pid={problemId}'
+	UiProblemsPath string `json:"uiProblemsPath" split_words:"true" default:"/apps/dynatrace.classic.problems/#problems/problemdetails"`
 	// The Dynatrace API Token
 	ApiToken string `json:"apiToken" split_words:"true" required:"true"`
 	// To not check certificate for on-prem dynatrace installations
