@@ -51,7 +51,7 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		Icon:        extutil.Ptr(problemCheckActionIcon),
 		Technology:  extutil.Ptr("Dynatrace"),
-		Category:    extutil.Ptr("Dynatrace"), //Can be removed in Q1/24 - support for backward compatibility of old sidebar
+
 		Kind:        action_kit_api.Check,
 		TimeControl: action_kit_api.TimeControlInternal,
 		Parameters: []action_kit_api.ActionParameter{

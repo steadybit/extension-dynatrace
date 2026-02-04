@@ -6,6 +6,9 @@ package extmaintenance
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/extension-dynatrace/config"
@@ -13,8 +16,6 @@ import (
 	extension_kit "github.com/steadybit/extension-kit"
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extutil"
-	"net/http"
-	"time"
 )
 
 type CreateMaintenanceWindowAction struct{}
@@ -54,7 +55,7 @@ func (m *CreateMaintenanceWindowAction) Describe() action_kit_api.ActionDescript
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		Icon:        extutil.Ptr(maintenanceActionIcon),
 		Technology:  extutil.Ptr("Dynatrace"),
-		Category:    extutil.Ptr("Dynatrace"), //Can be removed in Q1/24 - support for backward compatibility of old sidebar
+
 		Kind:        action_kit_api.Other,
 		TimeControl: action_kit_api.TimeControlExternal,
 		Parameters: []action_kit_api.ActionParameter{
