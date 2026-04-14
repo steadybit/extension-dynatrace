@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
@@ -49,8 +50,8 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 		Label:       "Problem Check",
 		Description: "Checks for the existence of open problems in Dynatrace.",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
-		Icon:        extutil.Ptr(problemCheckActionIcon),
-		Technology:  extutil.Ptr("Dynatrace"),
+		Icon:        new(problemCheckActionIcon),
+		Technology:  new("Dynatrace"),
 
 		Kind:        action_kit_api.Check,
 		TimeControl: action_kit_api.TimeControlInternal,
@@ -58,26 +59,26 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 			{
 				Name:         "duration",
 				Label:        "Duration",
-				Description:  extutil.Ptr(""),
+				Description:  new(""),
 				Type:         action_kit_api.ActionParameterTypeDuration,
-				DefaultValue: extutil.Ptr("30s"),
-				Order:        extutil.Ptr(1),
-				Required:     extutil.Ptr(true),
+				DefaultValue: new("30s"),
+				Order:        new(1),
+				Required:     new(true),
 			},
 			{
 				Name:        "entitySelector",
 				Label:       "Entity Selector",
-				Description: extutil.Ptr("Filter Problems by an Dynatrace entity selector. If empty, all problems are considered."),
+				Description: new("Filter Problems by an Dynatrace entity selector. If empty, all problems are considered."),
 				Type:        action_kit_api.ActionParameterTypeString,
-				Order:       extutil.Ptr(2),
-				Required:    extutil.Ptr(false),
+				Order:       new(2),
+				Required:    new(false),
 			},
 			{
 				Name:        "condition",
 				Label:       "Condition",
-				Description: extutil.Ptr(""),
+				Description: new(""),
 				Type:        action_kit_api.ActionParameterTypeString,
-				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
 						Label: "No check, only show problems",
 						Value: conditionShowOnly,
@@ -91,17 +92,17 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 						Value: conditionAtLeastOneProblem,
 					},
 				}),
-				DefaultValue: extutil.Ptr(conditionShowOnly),
-				Order:        extutil.Ptr(3),
-				Required:     extutil.Ptr(true),
+				DefaultValue: new(conditionShowOnly),
+				Order:        new(3),
+				Required:     new(true),
 			},
 			{
 				Name:         "conditionCheckMode",
 				Label:        "Condition Check Mode",
-				Description:  extutil.Ptr("Should the step succeed if the condition is met at least once or all the time?"),
+				Description:  new("Should the step succeed if the condition is met at least once or all the time?"),
 				Type:         action_kit_api.ActionParameterTypeString,
-				DefaultValue: extutil.Ptr(conditionCheckModeAllTheTime),
-				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+				DefaultValue: new(conditionCheckModeAllTheTime),
+				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
 						Label: "All the time",
 						Value: conditionCheckModeAllTheTime,
@@ -111,11 +112,11 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 						Value: conditionCheckModeAtLeastOnce,
 					},
 				}),
-				Required: extutil.Ptr(true),
-				Order:    extutil.Ptr(4),
+				Required: new(true),
+				Order:    new(4),
 			},
 		},
-		Widgets: extutil.Ptr([]action_kit_api.Widget{
+		Widgets: new([]action_kit_api.Widget{
 			action_kit_api.StateOverTimeWidget{
 				Type:  action_kit_api.ComSteadybitWidgetStateOverTime,
 				Title: "Dynatrace Problems",
@@ -131,18 +132,18 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 				Tooltip: action_kit_api.StateOverTimeWidgetTooltipConfig{
 					From: "tooltip",
 				},
-				Url: extutil.Ptr(action_kit_api.StateOverTimeWidgetUrlConfig{
-					From: extutil.Ptr("url"),
+				Url: new(action_kit_api.StateOverTimeWidgetUrlConfig{
+					From: new("url"),
 				}),
-				Value: extutil.Ptr(action_kit_api.StateOverTimeWidgetValueConfig{
-					Hide: extutil.Ptr(true),
+				Value: new(action_kit_api.StateOverTimeWidgetValueConfig{
+					Hide: new(true),
 				}),
 			},
 		}),
 		Prepare: action_kit_api.MutatingEndpointReference{},
 		Start:   action_kit_api.MutatingEndpointReference{},
-		Status: extutil.Ptr(action_kit_api.MutatingEndpointReferenceWithCallInterval{
-			CallInterval: extutil.Ptr("5s"),
+		Status: new(action_kit_api.MutatingEndpointReferenceWithCallInterval{
+			CallInterval: new("5s"),
 		}),
 	}
 }
@@ -153,7 +154,7 @@ func (m *ProblemCheckAction) Prepare(_ context.Context, state *ProblemCheckState
 	state.End = time.Now().Add(time.Millisecond * time.Duration(duration))
 
 	if extutil.ToString(request.Config["entitySelector"]) != "" {
-		state.EntitySelector = extutil.Ptr(extutil.ToString(request.Config["entitySelector"]))
+		state.EntitySelector = new(extutil.ToString(request.Config["entitySelector"]))
 	}
 
 	if request.Config["condition"] != nil {
@@ -200,13 +201,13 @@ func ProblemCheckStatus(ctx context.Context, state *ProblemCheckState, api Probl
 	var checkError *action_kit_api.ActionKitError
 	if state.ConditionCheckMode == conditionCheckModeAllTheTime {
 		if state.Condition == conditionNoProblems && len(problems) > 0 {
-			checkError = extutil.Ptr(action_kit_api.ActionKitError{
+			checkError = new(action_kit_api.ActionKitError{
 				Title:  fmt.Sprintf("No problem expected, but %d problems found.", len(problems)),
 				Status: extutil.Ptr(action_kit_api.Failed),
 			})
 		}
 		if state.Condition == conditionAtLeastOneProblem && len(problems) == 0 {
-			checkError = extutil.Ptr(action_kit_api.ActionKitError{
+			checkError = new(action_kit_api.ActionKitError{
 				Title:  "At least one problem expected, but no problems found.",
 				Status: extutil.Ptr(action_kit_api.Failed),
 			})
@@ -221,12 +222,12 @@ func ProblemCheckStatus(ctx context.Context, state *ProblemCheckState, api Probl
 		}
 		if completed && !state.ConditionCheckSuccess {
 			if state.Condition == conditionNoProblems {
-				checkError = extutil.Ptr(action_kit_api.ActionKitError{
+				checkError = new(action_kit_api.ActionKitError{
 					Title:  "No problem expected, but problems found.",
 					Status: extutil.Ptr(action_kit_api.Failed),
 				})
 			} else if state.Condition == conditionAtLeastOneProblem {
-				checkError = extutil.Ptr(action_kit_api.ActionKitError{
+				checkError = new(action_kit_api.ActionKitError{
 					Title:  "At least one problem expected, but no problems found.",
 					Status: extutil.Ptr(action_kit_api.Failed),
 				})
@@ -242,23 +243,24 @@ func ProblemCheckStatus(ctx context.Context, state *ProblemCheckState, api Probl
 	return &action_kit_api.StatusResult{
 		Completed: completed,
 		Error:     checkError,
-		Metrics:   extutil.Ptr(metrics),
+		Metrics:   new(metrics),
 	}, nil
 }
 
 func toMetric(problem types.Problem, now time.Time) action_kit_api.Metric {
-	tooltip := problem.DisplayId
+	var tooltip strings.Builder
+	tooltip.WriteString(problem.DisplayId)
 	for _, entity := range problem.AffectedEntities {
-		tooltip += fmt.Sprintf("\n- %s", entity.Name)
+		tooltip.WriteString(fmt.Sprintf("\n- %s", entity.Name))
 	}
 
 	return action_kit_api.Metric{
-		Name: extutil.Ptr("dynatrace_problems"),
+		Name: new("dynatrace_problems"),
 		Metric: map[string]string{
 			"dynatrace.problem.id":    problem.ProblemId,
 			"dynatrace.problem.title": problem.Title,
 			"state":                   "danger",
-			"tooltip":                 tooltip,
+			"tooltip":                 tooltip.String(),
 			"url":                     fmt.Sprintf("%s%s;pid=%s", config.Config.UiBaseUrl, config.Config.UiProblemsPath, problem.ProblemId),
 		},
 		Timestamp: now,

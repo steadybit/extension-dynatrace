@@ -29,15 +29,15 @@ func (m *dynatraceApiMock) DeleteMaintenanceWindow(ctx context.Context, maintena
 func TestCreateMaintenanceWindowPrepareExtractsState(t *testing.T) {
 	// Given
 	request := extutil.JsonMangle(action_kit_api.PrepareActionRequestBody{
-		Config: map[string]interface{}{
+		Config: map[string]any{
 			"duration":        1000 * 60,
 			"suppressionType": "DETECT_PROBLEMS_DONT_ALERT",
 		},
-		ExecutionContext: extutil.Ptr(action_kit_api.ExecutionContext{
-			ExperimentUri: extutil.Ptr("<uri-to-experiment>"),
-			ExecutionUri:  extutil.Ptr("<uri-to-execution>"),
-			ExperimentKey: extutil.Ptr("<experiment-key>"),
-			ExecutionId:   extutil.Ptr(4711),
+		ExecutionContext: new(action_kit_api.ExecutionContext{
+			ExperimentUri: new("<uri-to-experiment>"),
+			ExecutionUri:  new("<uri-to-execution>"),
+			ExperimentKey: new("<experiment-key>"),
+			ExecutionId:   new(4711),
 		}),
 	})
 	action := CreateMaintenanceWindowAction{}
@@ -60,8 +60,8 @@ func TestCreateMaintenanceWindowStartSuccess(t *testing.T) {
 	// Given
 	mockedApi := new(dynatraceApiMock)
 	mockedApi.On("CreateMaintenanceWindow", mock.Anything, mock.Anything, mock.Anything).Return(
-		extutil.Ptr("this-is-the-id"),
-		extutil.Ptr(http.Response{
+		new("this-is-the-id"),
+		new(http.Response{
 			StatusCode: 200,
 		}), nil).Once()
 
@@ -69,10 +69,10 @@ func TestCreateMaintenanceWindowStartSuccess(t *testing.T) {
 	state := action.NewEmptyState()
 	state.End = time.Now().Add(time.Minute)
 	state.SuppressionType = "DETECT_PROBLEMS_DONT_ALERT"
-	state.ExecutionUri = extutil.Ptr("<uri-to-execution>")
-	state.ExperimentUri = extutil.Ptr("<uri-to-experiment>")
-	state.ExperimentKey = extutil.Ptr("<experiment-key>")
-	state.ExecutionId = extutil.Ptr(4711)
+	state.ExecutionUri = new("<uri-to-execution>")
+	state.ExperimentUri = new("<uri-to-experiment>")
+	state.ExperimentKey = new("<experiment-key>")
+	state.ExecutionId = new(4711)
 
 	// When
 	result, err := CreateMaintenanceWindow(context.Background(), &state, mockedApi)
@@ -87,7 +87,7 @@ func TestCreateMaintenanceWindowStartSuccess(t *testing.T) {
 func TestCreateMaintenanceWindowStopSuccess(t *testing.T) {
 	// Given
 	mockedApi := new(dynatraceApiMock)
-	mockedApi.On("DeleteMaintenanceWindow", mock.Anything, mock.Anything).Return(extutil.Ptr(http.Response{
+	mockedApi.On("DeleteMaintenanceWindow", mock.Anything, mock.Anything).Return(new(http.Response{
 		StatusCode: 200,
 	}), nil).Once()
 
@@ -95,11 +95,11 @@ func TestCreateMaintenanceWindowStopSuccess(t *testing.T) {
 	state := action.NewEmptyState()
 	state.End = time.Now().Add(time.Minute)
 	state.SuppressionType = "DETECT_PROBLEMS_DONT_ALERT"
-	state.ExecutionUri = extutil.Ptr("<uri-to-execution>")
-	state.ExperimentUri = extutil.Ptr("<uri-to-experiment>")
-	state.ExperimentKey = extutil.Ptr("<experiment-key>")
-	state.ExecutionId = extutil.Ptr(4711)
-	state.MaintenanceWindowId = extutil.Ptr("this-is-the-id")
+	state.ExecutionUri = new("<uri-to-execution>")
+	state.ExperimentUri = new("<uri-to-experiment>")
+	state.ExperimentKey = new("<experiment-key>")
+	state.ExecutionId = new(4711)
+	state.MaintenanceWindowId = new("this-is-the-id")
 
 	// When
 	result, err := DeleteMaintenanceWindow(context.Background(), &state, mockedApi)
