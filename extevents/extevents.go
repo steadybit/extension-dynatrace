@@ -16,7 +16,6 @@ import (
 	"github.com/steadybit/extension-dynatrace/types"
 	extension_kit "github.com/steadybit/extension-kit"
 	"github.com/steadybit/extension-kit/exthttp"
-	"github.com/steadybit/extension-kit/extutil"
 	"net/http"
 	"sync"
 	"time"
@@ -97,14 +96,14 @@ func onExperimentStarted(event *event_kit_api.EventRequestBody) (*types.EventIng
 		EventType:  "CUSTOM_INFO",
 		Title:      fmt.Sprintf("Steadybit experiment '%s / %g' started", event.ExperimentExecution.ExperimentKey, event.ExperimentExecution.ExecutionId),
 		Properties: props,
-		StartTime:  extutil.Ptr(event.EventTime.UnixMilli()),
-		EndTime:    extutil.Ptr(event.EventTime.UnixMilli()),
+		StartTime:  new(event.EventTime.UnixMilli()),
+		EndTime:    new(event.EventTime.UnixMilli()),
 	}, nil
 }
 
 func onExperimentCompleted(event *event_kit_api.EventRequestBody) (*types.EventIngest, error) {
 	log.Info().Str("experimentKey", event.ExperimentExecution.ExperimentKey).Float32("executionId", event.ExperimentExecution.ExecutionId).Str("status", string(event.ExperimentExecution.State)).Msg("Received event about ended experiment.")
-	stepExecutions.Range(func(key, value interface{}) bool {
+	stepExecutions.Range(func(key, value any) bool {
 		stepExecution := value.(event_kit_api.ExperimentStepExecution)
 		if stepExecution.ExecutionId == event.ExperimentExecution.ExecutionId {
 			log.Debug().Msgf("Delete step execution data for id %.0f", stepExecution.ExecutionId)
@@ -120,8 +119,8 @@ func onExperimentCompleted(event *event_kit_api.EventRequestBody) (*types.EventI
 		EventType:  "CUSTOM_INFO",
 		Title:      fmt.Sprintf("Steadybit experiment '%s / %g' ended", event.ExperimentExecution.ExperimentKey, event.ExperimentExecution.ExecutionId),
 		Properties: props,
-		StartTime:  extutil.Ptr(event.ExperimentExecution.EndedTime.UnixMilli()),
-		EndTime:    extutil.Ptr(event.ExperimentExecution.EndedTime.UnixMilli()),
+		StartTime:  new(event.ExperimentExecution.EndedTime.UnixMilli()),
+		EndTime:    new(event.ExperimentExecution.EndedTime.UnixMilli()),
 	}, nil
 }
 
@@ -160,8 +159,8 @@ func onExperimentTargetStarted(event *event_kit_api.EventRequestBody) (*types.Ev
 				getTargetName(*event.ExperimentStepTargetExecution)),
 			Properties:     props,
 			EntitySelector: getEntitySelector(*event.ExperimentStepTargetExecution),
-			StartTime:      extutil.Ptr(event.ExperimentStepTargetExecution.StartedTime.UnixMilli()),
-			EndTime:        extutil.Ptr(event.ExperimentStepTargetExecution.StartedTime.UnixMilli()),
+			StartTime:      new(event.ExperimentStepTargetExecution.StartedTime.UnixMilli()),
+			EndTime:        new(event.ExperimentStepTargetExecution.StartedTime.UnixMilli()),
 		}, nil
 	}
 
@@ -195,8 +194,8 @@ func onExperimentTargetCompleted(event *event_kit_api.EventRequestBody) (*types.
 				getTargetName(*event.ExperimentStepTargetExecution)),
 			Properties:     props,
 			EntitySelector: getEntitySelector(*event.ExperimentStepTargetExecution),
-			StartTime:      extutil.Ptr(event.ExperimentStepTargetExecution.EndedTime.UnixMilli()),
-			EndTime:        extutil.Ptr(event.ExperimentStepTargetExecution.EndedTime.UnixMilli()),
+			StartTime:      new(event.ExperimentStepTargetExecution.EndedTime.UnixMilli()),
+			EndTime:        new(event.ExperimentStepTargetExecution.EndedTime.UnixMilli()),
 		}, nil
 	}
 	return nil, nil
@@ -224,26 +223,26 @@ func getEntitySelector(target event_kit_api.ExperimentStepTargetExecution) *stri
 	var entitySelector *string
 
 	if target.TargetType == "com.steadybit.extension_kubernetes.kubernetes-cluster" && hasSingleAttribute(target, "k8s.cluster-name") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(KUBERNETES_CLUSTER),entityName.equals(%s)", target.TargetAttributes["k8s.cluster-name"][0]))
+		entitySelector = new(fmt.Sprintf("type(KUBERNETES_CLUSTER),entityName.equals(%s)", target.TargetAttributes["k8s.cluster-name"][0]))
 	} else if target.TargetType == "com.steadybit.extension_kubernetes.kubernetes-deployment" && hasSingleAttribute(target, "k8s.deployment") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(CLOUD_APPLICATION),entityName.equals(%s)", target.TargetAttributes["k8s.deployment"][0]))
+		entitySelector = new(fmt.Sprintf("type(CLOUD_APPLICATION),entityName.equals(%s)", target.TargetAttributes["k8s.deployment"][0]))
 	} else if target.TargetType == "com.steadybit.extension_kubernetes.kubernetes-statefulset" && hasSingleAttribute(target, "k8s.statefulset") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(CLOUD_APPLICATION),entityName.equals(%s)", target.TargetAttributes["k8s.statefulset"][0]))
+		entitySelector = new(fmt.Sprintf("type(CLOUD_APPLICATION),entityName.equals(%s)", target.TargetAttributes["k8s.statefulset"][0]))
 	} else if target.TargetType == "com.steadybit.extension_kubernetes.kubernetes-daemonset" && hasSingleAttribute(target, "k8s.daemonset") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(CLOUD_APPLICATION),entityName.equals(%s)", target.TargetAttributes["k8s.daemonset"][0]))
+		entitySelector = new(fmt.Sprintf("type(CLOUD_APPLICATION),entityName.equals(%s)", target.TargetAttributes["k8s.daemonset"][0]))
 	} else if target.TargetType == "com.steadybit.extension_kubernetes.kubernetes-node" && hasSingleAttribute(target, "k8s.node.name") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(KUBERNETES_NODE),entityName.equals(%s)", target.TargetAttributes["k8s.node.name"][0]))
+		entitySelector = new(fmt.Sprintf("type(KUBERNETES_NODE),entityName.equals(%s)", target.TargetAttributes["k8s.node.name"][0]))
 	} else if target.TargetType == "com.steadybit.extension_kubernetes.kubernetes-pod" && hasSingleAttribute(target, "k8s.pod.name") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(CLOUD_APPLICATION_INSTANCE),entityName.equals(%s)", target.TargetAttributes["k8s.pod.name"][0]))
+		entitySelector = new(fmt.Sprintf("type(CLOUD_APPLICATION_INSTANCE),entityName.equals(%s)", target.TargetAttributes["k8s.pod.name"][0]))
 	} else if target.TargetType == "com.steadybit.extension_jvm.application" && hasSingleAttribute(target, "k8s.pod.name") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(CLOUD_APPLICATION_INSTANCE),entityName.equals(%s)", target.TargetAttributes["k8s.pod.name"][0]))
+		entitySelector = new(fmt.Sprintf("type(CLOUD_APPLICATION_INSTANCE),entityName.equals(%s)", target.TargetAttributes["k8s.pod.name"][0]))
 	} else if target.TargetType == "com.steadybit.extension_container.container" && hasSingleAttribute(target, "k8s.container.name") && hasSingleAttribute(target, "k8s.pod.name") {
-		entitySelector = extutil.Ptr(fmt.Sprintf("type(CONTAINER_GROUP_INSTANCE),entityName.equals(%s %s)", target.TargetAttributes["k8s.pod.name"][0], target.TargetAttributes["k8s.container.name"][0]))
+		entitySelector = new(fmt.Sprintf("type(CONTAINER_GROUP_INSTANCE),entityName.equals(%s %s)", target.TargetAttributes["k8s.pod.name"][0], target.TargetAttributes["k8s.container.name"][0]))
 	} else if target.TargetType == "com.steadybit.extension_host.host" && hasSingleAttribute(target, "host.hostname") {
 		if hasSingleAttribute(target, "k8s.cluster-name") {
-			entitySelector = extutil.Ptr(fmt.Sprintf("type(KUBERNETES_NODE),entityName.equals(%s)", target.TargetAttributes["host.hostname"][0]))
+			entitySelector = new(fmt.Sprintf("type(KUBERNETES_NODE),entityName.equals(%s)", target.TargetAttributes["host.hostname"][0]))
 		} else if hasSingleAttribute(target, "host.hostname") {
-			entitySelector = extutil.Ptr(fmt.Sprintf("type(HOST),entityName.equals(%s)", target.TargetAttributes["host.hostname"][0]))
+			entitySelector = new(fmt.Sprintf("type(HOST),entityName.equals(%s)", target.TargetAttributes["host.hostname"][0]))
 		}
 	}
 

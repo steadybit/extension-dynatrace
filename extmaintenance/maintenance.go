@@ -53,8 +53,8 @@ func (m *CreateMaintenanceWindowAction) Describe() action_kit_api.ActionDescript
 		Label:       "Create Maintenance Window",
 		Description: "Create a Maintenance Window for a given duration.",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
-		Icon:        extutil.Ptr(maintenanceActionIcon),
-		Technology:  extutil.Ptr("Dynatrace"),
+		Icon:        new(maintenanceActionIcon),
+		Technology:  new("Dynatrace"),
 
 		Kind:        action_kit_api.Other,
 		TimeControl: action_kit_api.TimeControlExternal,
@@ -62,18 +62,18 @@ func (m *CreateMaintenanceWindowAction) Describe() action_kit_api.ActionDescript
 			{
 				Name:         "duration",
 				Label:        "Duration",
-				Description:  extutil.Ptr("How long should the maintenance window last?"),
+				Description:  new("How long should the maintenance window last?"),
 				Type:         action_kit_api.ActionParameterTypeDuration,
-				DefaultValue: extutil.Ptr("30s"),
-				Order:        extutil.Ptr(0),
-				Required:     extutil.Ptr(true),
+				DefaultValue: new("30s"),
+				Order:        new(0),
+				Required:     new(true),
 			},
 			{
 				Name:         "suppressionType",
 				Label:        "Problem detection and alerting",
 				Type:         action_kit_api.ActionParameterTypeString,
-				DefaultValue: extutil.Ptr(DetectProblemsAndAlert),
-				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+				DefaultValue: new(DetectProblemsAndAlert),
+				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
 						Value: DetectProblemsAndAlert,
 						Label: "Detect problems and alert",
@@ -87,11 +87,11 @@ func (m *CreateMaintenanceWindowAction) Describe() action_kit_api.ActionDescript
 						Label: "Disable problem detection during maintenance",
 					},
 				}),
-				Order:    extutil.Ptr(1),
-				Required: extutil.Ptr(true),
+				Order:    new(1),
+				Required: new(true),
 			},
 		},
-		Stop: extutil.Ptr(action_kit_api.MutatingEndpointReference{}),
+		Stop: new(action_kit_api.MutatingEndpointReference{}),
 	}
 }
 
