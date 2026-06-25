@@ -138,12 +138,12 @@ func (s *Specification) DeleteMaintenanceWindow(_ context.Context, maintenanceWi
 }
 
 func (s *Specification) GetProblems(_ context.Context, from time.Time, entitySelector *string) ([]types.Problem, *http.Response, error) {
-	url := fmt.Sprintf("%s/v2/problems?problemSelector=status(\"OPEN\")&pageSize=500", s.ApiBaseUrl)
+	requestUrl := fmt.Sprintf("%s/v2/problems?problemSelector=status(\"OPEN\")&pageSize=500", s.ApiBaseUrl)
 	if entitySelector != nil {
-		url = fmt.Sprintf("%s&entitySelector=%s", url, *entitySelector)
+		requestUrl = fmt.Sprintf("%s&entitySelector=%s", requestUrl, url.QueryEscape(*entitySelector))
 	}
 
-	responseBody, response, err := s.do(url, "GET", nil)
+	responseBody, response, err := s.do(requestUrl, "GET", nil)
 	if err != nil {
 		return nil, response, err
 	}
