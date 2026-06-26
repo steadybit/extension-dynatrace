@@ -307,3 +307,28 @@ func Test_GetProblems_Success(t *testing.T) {
 		t.Fatalf("bad problems: %+v", problems)
 	}
 }
+
+func Test_GetProblems_EscapesEntitySelector(t *testing.T) {
+	rc := &reqCapture{}
+	srv := newMockHTTPServer(t, rc)
+	defer srv.Close()
+
+	spec := Specification{ApiBaseUrl: srv.URL, ApiToken: "X"}
+	// A selector containing characters that would otherwise break out of the query parameter.
+	sel := `type("HOST"),tag("a&b=c")`
+	if _, _, err := spec.GetProblems(context.Background(), time.Now(), &sel); err != nil {
+		t.Fatalf("GetProblems err: %v", err)
+	}
+
+	// Properly escaped, the value round-trips through query parsing unchanged...
+	if got := rc.Query.Get("entitySelector"); got != sel {
+		t.Fatalf("entitySelector not escaped: got %q want %q", got, sel)
+	}
+	// ...and the embedded '&b=c' did not inject a separate parameter or corrupt problemSelector.
+	if ps := rc.Query.Get("problemSelector"); ps != `status("OPEN")` {
+		t.Fatalf("problemSelector corrupted: %q", ps)
+	}
+	if rc.Query.Get("b") != "" {
+		t.Fatalf("injected parameter leaked into query: b=%q", rc.Query.Get("b"))
+	}
+}

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- fix: URL-escape the `entitySelector` when querying Dynatrace problems, preventing query-parameter injection into the Dynatrace API (matches the existing escaping in the entities query)
+
 ## v1.0.24
 
 - build(deps): bump github.com/steadybit/extension-kit
