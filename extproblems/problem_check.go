@@ -258,7 +258,7 @@ func ProblemCheckStatus(ctx context.Context, state *ProblemCheckState, api Probl
 		if completed && !state.ConditionCheckSuccess {
 			if state.Condition == conditionNoProblems {
 				checkError = new(action_kit_api.ActionKitError{
-					Title:  "No problem expected, but problems found.",
+					Title:  "Expected the problems to clear at least once, but problems were present for the entire step.",
 					Status: extutil.Ptr(action_kit_api.Failed),
 				})
 			} else if state.Condition == conditionAtLeastOneProblem {
