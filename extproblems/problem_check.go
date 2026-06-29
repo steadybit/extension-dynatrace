@@ -221,12 +221,17 @@ func ProblemCheckStatus(ctx context.Context, state *ProblemCheckState, api Probl
 	completed := now.After(state.End)
 	var checkError *action_kit_api.ActionKitError
 	if state.ConditionCheckMode == conditionCheckModeAllTheTime {
-		var deviationTitle string
+		// deviationTitle is the present-tense message for the fail-early case; deferredTitle is the
+		// past-tense message reported at the end of the step, since the condition may have recovered
+		// by then.
+		var deviationTitle, deferredTitle string
 		if state.Condition == conditionNoProblems && len(problems) > 0 {
 			deviationTitle = fmt.Sprintf("No problem expected, but %d problems found.", len(problems))
+			deferredTitle = fmt.Sprintf("No problem expected, but %d problems were found during the step.", len(problems))
 		}
 		if state.Condition == conditionAtLeastOneProblem && len(problems) == 0 {
 			deviationTitle = "At least one problem expected, but no problems found."
+			deferredTitle = "At least one problem expected, but no problems were found during the step."
 		}
 		if deviationTitle != "" {
 			if state.FailEarly {
@@ -238,7 +243,7 @@ func ProblemCheckStatus(ctx context.Context, state *ProblemCheckState, api Probl
 			} else {
 				// Keep collecting events and remember the deviation to report it at the end of the step.
 				state.DeviationSeen = true
-				state.DeviationTitle = deviationTitle
+				state.DeviationTitle = deferredTitle
 			}
 		}
 		if !state.FailEarly && completed && state.DeviationSeen {

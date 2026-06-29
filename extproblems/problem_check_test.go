@@ -117,7 +117,7 @@ func TestAllTheTimeFailAtEnd(t *testing.T) {
 	require.Nil(t, err)
 	require.True(t, result.Completed)
 	require.NotNil(t, result.Error)
-	require.Equal(t, "No problem expected, but 1 problems found.", result.Error.Title)
+	require.Equal(t, "No problem expected, but 1 problems were found during the step.", result.Error.Title) // past tense at end of step
 }
 
 func TestAllTheTimeFailAtEndSucceedsWhenNeverDeviated(t *testing.T) {
