@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Add a "Fail early" option to the problem check. When enabled (the default, matching the previous behavior), the check fails as soon as the condition is violated. When disabled, the check keeps collecting events for the whole duration and only fails at the end of the step.
+- Add a "Fail early" option to the problem check. When enabled (the default, matching the previous behavior), the check fails as soon as the condition is violated. When disabled, the check keeps collecting events for the whole duration and only fails at the end of the step. When failing at the end, the message uses past tense ("were found during the step") since the condition may have recovered by then.
 - fix: URL-escape the `entitySelector` when querying Dynatrace problems, preventing query-parameter injection into the Dynatrace API (matches the existing escaping in the entities query)
 
 ## v1.0.24
