@@ -34,6 +34,11 @@ type ProblemCheckState struct {
 	Condition             string
 	ConditionCheckMode    string
 	ConditionCheckSuccess bool
+	FailEarly             bool
+	// DeviationSeen and DeviationTitle are used in 'fail at end' mode (FailEarly = false) to remember
+	// that the condition was violated during the step so the failure can be reported once the step ends.
+	DeviationSeen  bool
+	DeviationTitle string
 }
 
 func NewProblemCheckAction() action_kit_sdk.Action[ProblemCheckState] {
@@ -115,6 +120,16 @@ func (m *ProblemCheckAction) Describe() action_kit_api.ActionDescription {
 				Required: new(true),
 				Order:    new(4),
 			},
+			{
+				Name:         "failEarly",
+				Label:        "Fail early",
+				Description:  new("If enabled, the check fails as soon as the condition is violated. If disabled, the check keeps collecting events for the whole duration and only fails at the end of the step. Only affects the 'All the time' mode; 'At least once' can only be evaluated at the end of the step."),
+				Type:         action_kit_api.ActionParameterTypeBoolean,
+				DefaultValue: new("true"),
+				Advanced:     new(true),
+				Required:     new(false),
+				Order:        new(5),
+			},
 		},
 		Widgets: new([]action_kit_api.Widget{
 			action_kit_api.StateOverTimeWidget{
@@ -165,6 +180,12 @@ func (m *ProblemCheckAction) Prepare(_ context.Context, state *ProblemCheckState
 		state.ConditionCheckMode = fmt.Sprintf("%v", request.Config["conditionCheckMode"])
 	}
 
+	// Default to failing early to preserve the previous behavior for experiments that don't set this parameter.
+	state.FailEarly = true
+	if request.Config["failEarly"] != nil {
+		state.FailEarly = extutil.ToBool(request.Config["failEarly"])
+	}
+
 	return nil, nil
 }
 
@@ -200,15 +221,29 @@ func ProblemCheckStatus(ctx context.Context, state *ProblemCheckState, api Probl
 	completed := now.After(state.End)
 	var checkError *action_kit_api.ActionKitError
 	if state.ConditionCheckMode == conditionCheckModeAllTheTime {
+		var deviationTitle string
 		if state.Condition == conditionNoProblems && len(problems) > 0 {
-			checkError = new(action_kit_api.ActionKitError{
-				Title:  fmt.Sprintf("No problem expected, but %d problems found.", len(problems)),
-				Status: extutil.Ptr(action_kit_api.Failed),
-			})
+			deviationTitle = fmt.Sprintf("No problem expected, but %d problems found.", len(problems))
 		}
 		if state.Condition == conditionAtLeastOneProblem && len(problems) == 0 {
+			deviationTitle = "At least one problem expected, but no problems found."
+		}
+		if deviationTitle != "" {
+			if state.FailEarly {
+				// Fail as soon as the condition is violated.
+				checkError = new(action_kit_api.ActionKitError{
+					Title:  deviationTitle,
+					Status: extutil.Ptr(action_kit_api.Failed),
+				})
+			} else {
+				// Keep collecting events and remember the deviation to report it at the end of the step.
+				state.DeviationSeen = true
+				state.DeviationTitle = deviationTitle
+			}
+		}
+		if !state.FailEarly && completed && state.DeviationSeen {
 			checkError = new(action_kit_api.ActionKitError{
-				Title:  "At least one problem expected, but no problems found.",
+				Title:  state.DeviationTitle,
 				Status: extutil.Ptr(action_kit_api.Failed),
 			})
 		}
@@ -223,7 +258,7 @@ func ProblemCheckStatus(ctx context.Context, state *ProblemCheckState, api Probl
 		if completed && !state.ConditionCheckSuccess {
 			if state.Condition == conditionNoProblems {
 				checkError = new(action_kit_api.ActionKitError{
-					Title:  "No problem expected, but problems found.",
+					Title:  "Expected the problems to clear at least once, but problems were present for the entire step.",
 					Status: extutil.Ptr(action_kit_api.Failed),
 				})
 			} else if state.Condition == conditionAtLeastOneProblem {
