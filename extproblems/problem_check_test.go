@@ -27,7 +27,7 @@ func (m *problemsApiMock) GetProblems(ctx context.Context, from time.Time, entit
 func TestPrepareDefaultsFailEarlyToTrue(t *testing.T) {
 	// Given
 	request := extutil.JsonMangle(action_kit_api.PrepareActionRequestBody{
-		Config: map[string]interface{}{
+		Config: map[string]any{
 			"duration":           1000 * 60,
 			"condition":          conditionNoProblems,
 			"conditionCheckMode": conditionCheckModeAllTheTime,
@@ -48,7 +48,7 @@ func TestPrepareDefaultsFailEarlyToTrue(t *testing.T) {
 func TestPrepareExtractsFailEarlyFalse(t *testing.T) {
 	// Given
 	request := extutil.JsonMangle(action_kit_api.PrepareActionRequestBody{
-		Config: map[string]interface{}{
+		Config: map[string]any{
 			"duration":           1000 * 60,
 			"condition":          conditionNoProblems,
 			"conditionCheckMode": conditionCheckModeAllTheTime,
@@ -70,7 +70,7 @@ func TestPrepareExtractsFailEarlyFalse(t *testing.T) {
 func TestAllTheTimeFailEarly(t *testing.T) {
 	// Given - a problem exists while "No problem expected", time not yet up
 	mockedApi := new(problemsApiMock)
-	mockedApi.On("GetProblems", mock.Anything, mock.Anything, mock.Anything).Return([]types.Problem{{}}, extutil.Ptr(http.Response{StatusCode: 200}), nil)
+	mockedApi.On("GetProblems", mock.Anything, mock.Anything, mock.Anything).Return([]types.Problem{{}}, new(http.Response{StatusCode: 200}), nil)
 
 	action := ProblemCheckAction{}
 	state := action.NewEmptyState()
@@ -93,7 +93,7 @@ func TestAllTheTimeFailEarly(t *testing.T) {
 func TestAllTheTimeFailAtEnd(t *testing.T) {
 	// First call: deviation but time not up -> no error, deviation remembered
 	mockedApi := new(problemsApiMock)
-	mockedApi.On("GetProblems", mock.Anything, mock.Anything, mock.Anything).Return([]types.Problem{{}}, extutil.Ptr(http.Response{StatusCode: 200}), nil).Once()
+	mockedApi.On("GetProblems", mock.Anything, mock.Anything, mock.Anything).Return([]types.Problem{{}}, new(http.Response{StatusCode: 200}), nil).Once()
 
 	action := ProblemCheckAction{}
 	state := action.NewEmptyState()
@@ -110,7 +110,7 @@ func TestAllTheTimeFailAtEnd(t *testing.T) {
 	require.True(t, state.DeviationSeen)
 
 	// Second call: problems gone but time is up and a deviation was seen -> fails at the end
-	mockedApi.On("GetProblems", mock.Anything, mock.Anything, mock.Anything).Return([]types.Problem{}, extutil.Ptr(http.Response{StatusCode: 200}), nil).Once()
+	mockedApi.On("GetProblems", mock.Anything, mock.Anything, mock.Anything).Return([]types.Problem{}, new(http.Response{StatusCode: 200}), nil).Once()
 	state.End = time.Now().Add(time.Minute * -1) // time is up
 
 	result, err = ProblemCheckStatus(context.Background(), &state, mockedApi)
@@ -123,7 +123,7 @@ func TestAllTheTimeFailAtEnd(t *testing.T) {
 func TestAllTheTimeFailAtEndSucceedsWhenNeverDeviated(t *testing.T) {
 	// Given - no problems throughout while "No problem expected", time is up
 	mockedApi := new(problemsApiMock)
-	mockedApi.On("GetProblems", mock.Anything, mock.Anything, mock.Anything).Return([]types.Problem{}, extutil.Ptr(http.Response{StatusCode: 200}), nil)
+	mockedApi.On("GetProblems", mock.Anything, mock.Anything, mock.Anything).Return([]types.Problem{}, new(http.Response{StatusCode: 200}), nil)
 
 	action := ProblemCheckAction{}
 	state := action.NewEmptyState()
