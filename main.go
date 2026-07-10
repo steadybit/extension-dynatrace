@@ -5,8 +5,6 @@
 package main
 
 import (
-	"time"
-
 	"github.com/rs/zerolog"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
@@ -25,8 +23,6 @@ import (
 	"github.com/steadybit/extension-kit/extsignals"
 )
 
-var startedAt = time.Now().Format(time.RFC3339)
-
 func main() {
 	extlogging.InitZeroLog()
 	extbuild.PrintBuildInformation()
@@ -42,7 +38,7 @@ func main() {
 	action_kit_sdk.RegisterAction(extmaintenance.NewMaintenanceAction())
 	action_kit_sdk.RegisterAction(extproblems.NewProblemCheckAction())
 
-	exthttp.RegisterHttpHandler("/", exthttp.IfNoneMatchHandler(func() string { return startedAt }, exthttp.GetterAsHandler(getExtensionList)))
+	exthttp.RegisterRevisionedHandler("/", getExtensionList)
 	action_kit_sdk.RegisterCoverageEndpoints()
 	extsignals.ActivateSignalHandlers()
 
