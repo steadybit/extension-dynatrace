@@ -1,9 +1,23 @@
 # Changelog
 
-## Unreleased
+## v1.0.25
 
 - Add a "Fail early" option to the problem check. When enabled (the default, matching the previous behavior), the check fails as soon as the condition is violated. When disabled, the check keeps collecting events for the whole duration and only fails at the end of the step. When failing at the end, the message uses past tense ("were found during the step") since the condition may have recovered by then.
+- build(deps): bump github.com/jellydator/ttlcache/v3 from 3.4.0 to 3.4.1
+- build(deps): bump github.com/steadybit/action-kit/go/action_kit_sdk
+- build(deps): bump github.com/steadybit/discovery-kit/go/discovery_kit_sdk
+- build(deps): bump github.com/steadybit/event-kit/go/event_kit_api
+- build(deps): bump github.com/steadybit/extension-kit
+- build(deps): bump goreleaser/goreleaser from v2.16.0 to v2.17.0
+- chore(deps): bump go to 1.26.5 (#144)
+- chore: add Claude Code workflows (#134)
+- chore: silence SonarQube finding on secrets: inherit in Claude workflows
+- ci: skip build on .trivyignore.yml-only changes [skip ci]
+- feat(problem check): add fail early option (#137)
+- fix(problem check): use past tense for fail-at-end message (#138)
 - fix: URL-escape the `entitySelector` when querying Dynatrace problems, preventing query-parameter injection into the Dynatrace API (matches the existing escaping in the entities query)
+- fix: escape entitySelector in Dynatrace problems query (#135)
+- refactor: register extension index via exthttp.RegisterRevisionedHandler (#145)
 
 ## v1.0.24
 
