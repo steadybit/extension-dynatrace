@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.26
+
+- build(deps): bump goreleaser/goreleaser from v2.17.0 to v2.17.1
+
 ## v1.0.25
 
 - Add a "Fail early" option to the problem check. When enabled (the default, matching the previous behavior), the check fails as soon as the condition is violated. When disabled, the check keeps collecting events for the whole duration and only fails at the end of the step. When failing at the end, the message uses past tense ("were found during the step") since the condition may have recovered by then.
