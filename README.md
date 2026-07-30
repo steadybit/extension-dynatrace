@@ -17,7 +17,15 @@ our [Reliability Hub](https://hub.steadybit.com/extension/com.steadybit.extensio
 | `STEADYBIT_EXTENSION_API_TOKEN`            | `dynatrace.apiToken` or `dynatrace.existingSecret` | The Dynatrace [API Token](https://docs.dynatrace.com/docs/dynatrace-api/basics/dynatrace-api-authentication#create-token), see the required scopes below      | yes      |                                                           |
 | `STEADYBIT_EXTENSION_INSECURE_SKIP_VERIFY` | `dynatrace.insecureSkipVerify`                     | To not check certificate for on-prem dynatrace installations                                                                                                  | false    | false                                                     |
 
-The extension supports all environment variables provided by [steadybit/extension-kit](https://github.com/steadybit/extension-kit#environment-variables).
+Beyond the settings above, this extension supports the configuration common to all Steadybit
+extensions:
+
+- [extension-kit](https://github.com/steadybit/extension-kit#environment-variables) — HTTP and
+  health ports, TLS and mutual TLS, unix domain socket, logging, and pprof.
+- [Target Filtering](https://github.com/steadybit/discovery-kit/blob/main/docs/target-filtering.md) —
+  stop the extension reporting targets you do not want.
+- [Group Matching](https://github.com/steadybit/discovery-kit/blob/main/docs/target-enrichment.md#group-matching) —
+  tag discovered targets with a group, so enrichment rules only match within it.
 
 When installed as linux package this configuration is in`/etc/steadybit/extension-dynatrace`.
 
