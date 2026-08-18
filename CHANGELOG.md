@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.29
+
+- chore(deps): bump steadybit kits and drop Go patch pin (#148)
+- chore(deps): pin goreleaser build toolchain to go1.26.6
+- chore(deps): use go-version-file, drop patch pin (go 1.26) (#147)
+
 ## v1.0.28
 
 - feat: support filtering targets out of discovery
