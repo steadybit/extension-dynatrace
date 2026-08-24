@@ -11,6 +11,35 @@ entries:
         - name: Steadybit reliability hub
           url: https://hub.steadybit.com
     apiVersion: v2
+    appVersion: v1.0.30
+    created: "2026-08-24T06:35:13.145497531Z"
+    dependencies:
+    - name: extensionlib
+      repository: https://steadybit.github.io/helm-charts
+      version: ^1.5.4
+    description: Steadybit Dynatrace extension Helm chart for Kubernetes.
+    digest: 9eeb55290f455de71ddac0ca9cd6742b584da8f6d965fff9dacebcb30ce50446
+    home: https://www.steadybit.com/
+    icon: https://steadybit-website-assets.s3.amazonaws.com/logo-symbol-transparent.png
+    maintainers:
+    - email: daniel.reuter@steadybit.com
+      name: reuda
+    name: steadybit-extension-dynatrace
+    sources:
+    - https://github.com/steadybit/extension-dynatrace
+    urls:
+    - https://github.com/steadybit/extension-dynatrace/releases/download/steadybit-extension-dynatrace-1.1.39/steadybit-extension-dynatrace-1.1.39.tgz
+    version: 1.1.39
+  - annotations:
+      artifacthub.io/images: |
+        - name: logo
+          image: https://steadybit-website-assets.s3.amazonaws.com/logo-symbol-transparent.png
+      artifacthub.io/links: |-
+        - name: Steadybit website
+          url: https://www.steadybit.com
+        - name: Steadybit reliability hub
+          url: https://hub.steadybit.com
+    apiVersion: v2
     appVersion: v1.0.29
     created: "2026-08-18T12:07:09.357133095Z"
     dependencies:
@@ -1248,4 +1277,4 @@ entries:
     urls:
     - https://github.com/steadybit/extension-dynatrace/releases/download/steadybit-extension-dynatrace-1.0.2/steadybit-extension-dynatrace-1.0.2.tgz
     version: 1.0.2
-generated: "2026-08-18T12:07:09.357992234Z"
+generated: "2026-08-24T06:35:13.145757764Z"
