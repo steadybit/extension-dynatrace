@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- fix: refuse to start when a required parameter is set but empty
+
 ## v1.0.32
 
 - build(deps): bump goreleaser/goreleaser from v2.18.0 to v2.18.1
