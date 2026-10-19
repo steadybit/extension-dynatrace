@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.36
+
+- build(deps): bump goreleaser/goreleaser from v2.18.2 to v2.18.3
+
 ## v1.0.35
 
 - chore(deps): bump golang.org/x/net to v0.61.0
