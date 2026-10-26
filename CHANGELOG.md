@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.37
+
+- build(deps): bump github.com/steadybit/action-kit/go/action_kit_test
+- build(deps): bump github.com/steadybit/extension-kit
+- build(docker): build with golang:1.27-alpine to pick up Go patch releases
+
 ## v1.0.36
 
 - build(deps): bump goreleaser/goreleaser from v2.18.2 to v2.18.3
