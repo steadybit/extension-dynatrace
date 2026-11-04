@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- feat: the Problem check shows Fail early with the other check settings
+
 ## v1.0.37
 
 - build(deps): bump github.com/steadybit/action-kit/go/action_kit_test
